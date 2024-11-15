@@ -1,42 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @font-face {
-  font-family: 'SpaceGrotesk';
+  font-family: "SpaceGrotesk";
   font-weight: 300;
   font-display: swap;
-  src: url('fonts/spacegrotesk-light-webfont.woff2') format('woff2'),
-    url('fonts/spacegrotesk-light-webfont.woff') format('woff');
+  src: url("fonts/spacegrotesk-light-webfont.woff2") format("woff2"),
+    url("fonts/spacegrotesk-light-webfont.woff") format("woff");
 }
 
 @font-face {
-  font-family: 'SpaceGrotesk';
+  font-family: "SpaceGrotesk";
   font-weight: 400;
   font-display: swap;
-  src: url('fonts/spacegrotesk-regular-webfont.woff2') format('woff2'),
-      url('fonts/spacegrotesk-regular-webfont.woff') format('woff');
+  src: url("fonts/spacegrotesk-regular-webfont.woff2") format("woff2"),
+    url("fonts/spacegrotesk-regular-webfont.woff") format("woff");
 }
 
 @font-face {
-  font-family: 'SpaceGrotesk';
+  font-family: "SpaceGrotesk";
   font-weight: 500;
   font-display: swap;
-  src: url('fonts/spacegrotesk-medium-webfont.woff2') format('woff2'),
-    url('fonts/spacegrotesk-medium-webfont.woff') format('woff');
+  src: url("fonts/spacegrotesk-medium-webfont.woff2") format("woff2"),
+    url("fonts/spacegrotesk-medium-webfont.woff") format("woff");
 }
 
 @font-face {
-  font-family: 'SpaceGrotesk';
+  font-family: "SpaceGrotesk";
   font-weight: 600;
   font-display: swap;
-    src: url('fonts/spacegrotesk-semibold-webfont.woff2') format('woff2'),
-        url('fonts/spacegrotesk-semibold-webfont.woff') format('woff');
+  src: url("fonts/spacegrotesk-semibold-webfont.woff2") format("woff2"),
+    url("fonts/spacegrotesk-semibold-webfont.woff") format("woff");
 }
 
 @font-face {
-  font-family: 'SpaceGrotesk';
+  font-family: "SpaceGrotesk";
   font-weight: 700;
   font-display: swap;
-  src: url('fonts/spacegrotesk-bold-webfont.woff2') format('woff2'),
-      url('fonts/spacegrotesk-bold-webfont.woff') format('woff');
+  src: url("fonts/spacegrotesk-bold-webfont.woff2") format("woff2"),
+    url("fonts/spacegrotesk-bold-webfont.woff") format("woff");
 }
 
 :root {
@@ -44,21 +47,21 @@
   --primary: #0d0d0d;
   --black: #000;
   --night: #0d0d0d;
-  --light-grey:#fafafa;
-  --light-grey2: #E8E8E8;
-  --light-grey3: #AFAFAF;
+  --light-grey: #fafafa;
+  --light-grey2: #e8e8e8;
+  --light-grey3: #afafaf;
   --dark-grey: #6d6d6d;
   --dark-grey2: #666666;
-  --dark-grey3: #5E5E5E;
+  --dark-grey3: #5e5e5e;
   --white: #fff;
-  --green: #81A68A;
-  --orange: #D96704;
-  --blue: #C9EBF2;
-  --dark-blue: #4C7EA0;
+  --green: #81a68a;
+  --orange: #d96704;
+  --blue: #c9ebf2;
+  --dark-blue: #4c7ea0;
   --sand: #d0ccc8;
-  --light-sand: #F1E9DE;
+  --light-sand: #f1e9de;
   --green-chart: #458254;
-  --gold: #FBEACA;
+  --gold: #fbeaca;
 
   /* fonts */
   --font-size-base: 16px;
@@ -96,7 +99,8 @@ aside.bn-onboard-custom {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
 
 h1 {
@@ -140,34 +144,34 @@ span {
 
 @keyframes fadeAnim {
   0% {
-      opacity: 0;
+    opacity: 0;
   }
 
   1% {
-      opacity: 0;
+    opacity: 0;
   }
 
   100% {
-      opacity: 1;
+    opacity: 1;
   }
 }
 
 @keyframes in {
   0% {
-      opacity: 0;
-      height: 0px;
+    opacity: 0;
+    height: 0px;
   }
-  1%{
-      opacity: 0;
+  1% {
+    opacity: 0;
   }
 
   20% {
-      opacity: 1;
+    opacity: 1;
   }
 
   100% {
-      opacity: 1;
-      height: calc(var(--final-height));
+    opacity: 1;
+    height: calc(var(--final-height));
   }
 }
 
@@ -184,21 +188,22 @@ span {
 }
 @keyframes shadow {
   0% {
-    box-shadow: 0px 4px 100px 0px rgba(109,109,109,0)
+    box-shadow: 0px 4px 100px 0px rgba(109, 109, 109, 0);
   }
 
   100% {
-    box-shadow: 0px 4px 100px 0px rgba(109,109,109,0.5)
+    box-shadow: 0px 4px 100px 0px rgba(109, 109, 109, 0.5);
   }
 }
 
-li.MuiMenuItem-root, label.MuiInputLabel-root {
-  font-family: 'SpaceGrotesk';
+li.MuiMenuItem-root,
+label.MuiInputLabel-root {
+  font-family: "SpaceGrotesk";
   color: var(--dark-grey);
 }
 
 .MuiSelect-select.MuiOutlinedInput-input {
-  font-family: 'SpaceGrotesk';
+  font-family: "SpaceGrotesk";
   padding: 16px 0;
   font-size: 16px !important;
   color: var(--light-grey3);
@@ -206,7 +211,7 @@ li.MuiMenuItem-root, label.MuiInputLabel-root {
 
 label.MuiInputLabel-outlined {
   font-size: 14px;
-  font-family: 'SpaceGrotesk';
+  font-family: "SpaceGrotesk";
   margin-left: -14px;
   color: var(--night);
 }

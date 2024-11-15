@@ -40,7 +40,7 @@
     "@mui/styled-engine-sc": "npm:@mui/styled-engine-sc@latest"
   },
   "scripts": {
-    "start": "HTTPS=true craco start",
+    "start": "HTTPS=true SSL_CRT_FILE=dev.kinto.xyz+3.pem SSL_KEY_FILE=dev.kinto.xyz+3-key.pem PORT=3001 HOST=dev.kinto.xyz craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"

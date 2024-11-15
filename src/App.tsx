@@ -195,7 +195,6 @@ const KintoConnect = () => {
     <WholeWrapper>
       <AppWrapper>
         <ContentWrapper>
-          <AppHeader />
           <BaseScreen>
             {accountInfo && (
               <BgWrapper>
@@ -305,16 +304,11 @@ const KintoConnect = () => {
                       Increase Counter
                     </PrimaryButton>
                   )}
-                  <LearnLink
-                    link={"https://docs.kinto.xyz"}
-                    text="Learn more about the Kinto Wallet SDK"
-                  />
                 </CounterWrapper>
               </BgWrapper>
             )}
             {!accountInfo && <GlobalLoader />}
           </BaseScreen>
-          <AppFooter />
         </ContentWrapper>
       </AppWrapper>
     </WholeWrapper>
@@ -354,7 +348,6 @@ const ContentWrapper = styled.div`
   height: auto;
   min-height: 100vh;
   width: 100%;
-  background: url(engen/commitment.svg) no-repeat;
   background-position-x: right;
   background-size: auto;
   overflow: hidden;
