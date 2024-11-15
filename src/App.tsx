@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { createKintoSDK, KintoAccountInfo } from "kinto-web-sdk";
 import {
-  encodeFunctionData,
   Address,
   getContract,
   defineChain,
@@ -68,52 +67,8 @@ const KintoConnect = () => {
   const [kycViewerInfo, setKYCViewerInfo] = useState<any | undefined>(
     undefined
   );
-  const [counter, setCounter] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const kintoSDK = createKintoSDK("0x14A1EC9b43c270a61cDD89B6CbdD985935D897fE");
-  const counterAddress =
-    "0x14A1EC9b43c270a61cDD89B6CbdD985935D897fE" as Address;
-
-  async function kintoLogin() {
-    try {
-      await kintoSDK.createNewWallet();
-    } catch (error) {
-      console.error("Failed to login/signup:", error);
-    }
-  }
-
-  async function fetchCounter() {
-    const client = createPublicClient({
-      chain: kinto,
-      transport: http(),
-    });
-    const counter = getContract({
-      address: counterAddress as Address,
-      abi: counterAbi,
-      client: { public: client },
-    });
-    const count = (await counter.read.count([])) as BigInt;
-    setCounter(parseInt(count.toString()));
-  }
-
-  async function increaseCounter() {
-    const data = encodeFunctionData({
-      abi: counterAbi,
-      functionName: "increment",
-      args: [],
-    });
-    setLoading(true);
-    try {
-      const response = await kintoSDK.sendTransaction([
-        { to: counterAddress, data, value: BigInt(0) },
-      ]);
-      await fetchCounter();
-    } catch (error) {
-      console.error("Failed to login/signup:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   async function fetchKYCViewerInfo() {
     if (!accountInfo?.walletAddress) return;
@@ -173,7 +128,6 @@ const KintoConnect = () => {
 
   useEffect(() => {
     fetchAccountInfo();
-    fetchCounter();
   });
 
   useEffect(() => {
