@@ -8,22 +8,11 @@ import {
   createPublicClient,
   http,
 } from "viem";
-import styled from "styled-components";
-import AppHeader from "components/shared/AppHeader";
-import AppFooter from "components/shared/AppFooter";
-import {
-  BaseScreen,
-  BaseHeader,
-  LearnLink,
-  KintoAddress,
-  GlobalLoader,
-  PrimaryButton,
-} from "components/shared";
-import { BREAKPOINTS } from "config";
-import { ReactComponent as CreditImage } from "./credit.svg";
-import numeral from "numeral";
 import contractsJSON from "../public/abis/7887.json";
 import "./App.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Navbar from "Components/Navbar";
 
 interface KYCViewerInfo {
   isIndividual: boolean;
@@ -172,10 +161,13 @@ const KintoConnect = () => {
   }
 
   async function fetchAccountInfo() {
+    setLoading(true);
     try {
       setAccountInfo(await kintoSDK.connect());
     } catch (error) {
       console.error("Failed to fetch account info:", error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -188,310 +180,22 @@ const KintoConnect = () => {
     if (accountInfo?.walletAddress) {
       fetchKYCViewerInfo();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountInfo]);
 
   // todo: add info about the dev portal and link
   return (
-    <WholeWrapper>
-      <AppWrapper>
-        <ContentWrapper>
-          <BaseScreen>
-            {accountInfo && (
-              <BgWrapper>
-                <CounterWrapper>
-                  <BaseHeader title="Kinto Wallet SDK Sample App" />
-                  {!accountInfo.walletAddress && (
-                    <PrimaryButton onClick={kintoLogin}>
-                      Login/Signup
-                    </PrimaryButton>
-                  )}
-                  <WalletRows>
-                    <WalletRow key="chain">
-                      <WalletRowName>Chain</WalletRowName>
-                      <WalletRowValue>
-                        <StyledCreditImage />
-                        <KintoLabel>Kinto (ID: 7887)</KintoLabel>
-                      </WalletRowValue>
-                    </WalletRow>
-                    <WalletRow key="app">
-                      <WalletRowName>App</WalletRowName>
-                      <WalletRowValue>
-                        <StyledMainAddress
-                          chainId={7887}
-                          address={counterAddress}
-                          showExplorer
-                          showClipboard
-                        />
-                      </WalletRowValue>
-                    </WalletRow>
-                    <WalletRow key="address">
-                      <WalletRowName>Wallet</WalletRowName>
-                      <WalletRowValue>
-                        <StyledMainAddress
-                          chainId={7887}
-                          address={accountInfo.walletAddress as Address}
-                          showExplorer
-                          showClipboard
-                        />
-                      </WalletRowValue>
-                    </WalletRow>
-                    <WalletRow key="Application Key">
-                      <WalletRowName>App Key</WalletRowName>
-                      <WalletRowValue>
-                        <StyledMainAddress
-                          chainId={7887}
-                          address={accountInfo.appKey as Address}
-                          showExplorer
-                          showClipboard
-                        />
-                      </WalletRowValue>
-                    </WalletRow>
-                    {kycViewerInfo && (
-                      <>
-                        <WalletRow key="isIndividual">
-                          <WalletRowName>Is Individual</WalletRowName>
-                          <WalletRowValue>
-                            <ETHValue>
-                              {kycViewerInfo.isIndividual ? "Yes" : "No"}
-                            </ETHValue>
-                          </WalletRowValue>
-                        </WalletRow>
-                        <WalletRow key="isCorporate">
-                          <WalletRowName>Is Corporate</WalletRowName>
-                          <WalletRowValue>
-                            <ETHValue>
-                              {kycViewerInfo.isCorporate ? "Yes" : "No"}
-                            </ETHValue>
-                          </WalletRowValue>
-                        </WalletRow>
-                        <WalletRow key="isKYC">
-                          <WalletRowName>Is KYC</WalletRowName>
-                          <WalletRowValue>
-                            <ETHValue>
-                              {kycViewerInfo.isKYC ? "Yes" : "No"}
-                            </ETHValue>
-                          </WalletRowValue>
-                        </WalletRow>
-                        <WalletRow key="isSanctionsSafe">
-                          <WalletRowName>Is Sanctions Safe</WalletRowName>
-                          <WalletRowValue>
-                            <ETHValue>
-                              {kycViewerInfo.isSanctionsSafe ? "Yes" : "No"}
-                            </ETHValue>
-                          </WalletRowValue>
-                        </WalletRow>
-                        <WalletRow key="country">
-                          <WalletRowName>Country</WalletRowName>
-                          <WalletRowValue>
-                            <ETHValue>{kycViewerInfo.getCountry}</ETHValue>
-                          </WalletRowValue>
-                        </WalletRow>
-                      </>
-                    )}
-                    <WalletRow key="counter">
-                      <WalletRowName>Counter</WalletRowName>
-                      <WalletRowValue>
-                        <ETHValue>{counter}</ETHValue>
-                      </WalletRowValue>
-                    </WalletRow>
-                  </WalletRows>
-                  <WalletNotice>
-                    <span>Attention!</span> Only send funds to your wallet
-                    address in the Kinto Network
-                  </WalletNotice>
-                  {accountInfo && (
-                    <PrimaryButton onClick={increaseCounter}>
-                      Increase Counter
-                    </PrimaryButton>
-                  )}
-                </CounterWrapper>
-              </BgWrapper>
-            )}
-            {!accountInfo && <GlobalLoader />}
-          </BaseScreen>
-        </ContentWrapper>
-      </AppWrapper>
-    </WholeWrapper>
+    <div className="bg-[#E8E8E8] min-h-screen">
+      <Navbar />
+    </div>
   );
 };
-
-const WholeWrapper = styled.div`
-  flex-flow: column nowrap;
-  height: auto;
-  align-items: center;
-  width: 100%;
-  display: flex;
-  min-height: 100vh;
-  min-width: 100vw;
-  position: relative;
-`;
-
-const AppWrapper = styled.div`
-  flex-flow: column nowrap;
-  height: auto;
-  align-items: center;
-  width: 100%;
-  display: flex;
-  min-height: 85vh;
-  min-width: 100vw;
-
-  @media only screen and (max-width: 400px) {
-    min-height: 90vh;
-  }
-`;
-
-const ContentWrapper = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-  align-items: center;
-  height: auto;
-  min-height: 100vh;
-  width: 100%;
-  background-position-x: right;
-  background-size: auto;
-  overflow: hidden;
-`;
-
-const BgWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  flex-flow: column nowrap;
-  justify-content: center;
-`;
-
-const CounterWrapper = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: flex-start;
-  gap: 32px;
-  padding: 16px 0;
-`;
-
-const WalletRows = styled.div`
-  display: flex;
-  padding-top: 16px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-  align-self: stretch;
-  max-width: 800px;
-  border-top: 1px solid var(--light-grey3);
-`;
-
-const WalletRow = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  padding-bottom: 16px;
-  align-items: center;
-  gap: 32px;
-  align-self: stretch;
-  border-bottom: 1px solid var(--light-grey3);
-  width: 100%;
-  overflow: hidden;
-`;
-
-const WalletRowName = styled.div`
-  width: 150px;
-  color: var(--night);
-  font-size: 16px;
-  font-weight: 700;
-  text-transform: uppercase;
-
-  @media only screen and (max-width: ${BREAKPOINTS.mobile}) {
-    width: 60px;
-    font-size: 14px;
-  }
-`;
-
-const WalletRowValue = styled.div`
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 8px;
-  flex: 1 0 0;
-  align-self: stretch;
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 120%;
-
-  @media only screen and (max-width: ${BREAKPOINTS.mobile}) {
-    font-size: 20px;
-  }
-`;
-
-const StyledCreditImage = styled(CreditImage)`
-  height: 28px;
-  width: 28px;
-`;
-
-const KintoLabel = styled.div`
-  color: var(--night);
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 120%; /* 28.8px */
-  @media only screen and (max-width: ${BREAKPOINTS.mobile}) {
-    font-size: 20px;
-  }
-`;
-
-const StyledMainAddress = styled(KintoAddress)`
-  > div {
-    font-size: 24px;
-    font-weight: 700;
-  }
-  gap: 16px;
-  svg {
-    width: 32px;
-    height: 32px;
-  }
-  div {
-    border: none;
-    padding: 0;
-    justify-content: flex-start;
-
-    div div {
-      width: calc(100% - 84px);
-    }
-  }
-
-  svg {
-    width: 32px;
-    height: 32px;
-  }
-`;
-
-const WalletNotice = styled.div`
-  color: var(--dark-grey);
-  font-size: 18px;
-  font-weight: 400;
-  width: 95%;
-
-  span {
-    color: var(--orange);
-    font-weight: 700;
-  }
-`;
-
-const ETHValue = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  gap: 8px;
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 120%;
-  color: var(--night);
-
-  @media only screen and (max-width: ${BREAKPOINTS.mobile}) {
-    font-size: 24px;
-  }
-`;
 
 function App() {
   return (
     <div className="App">
       <KintoConnect />
+      <ToastContainer />
     </div>
   );
 }

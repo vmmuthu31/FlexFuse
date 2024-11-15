@@ -27,6 +27,7 @@
     "react-dom": "^18.3.1",
     "react-number-format": "^5.4.0",
     "react-scripts": "5.0.1",
+    "react-toastify": "^10.0.6",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "styled-components": "^6.1.12",
