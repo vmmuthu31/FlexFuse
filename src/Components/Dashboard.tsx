@@ -154,6 +154,18 @@ const Dashboard = () => {
                   </Link>
                 </div>
               </div>
+              <div className="text-center mt-5">
+                <p>
+                  Do you don't have a group yet? Create a group and start
+                  sharing expenses.
+                  <Link
+                    to="/CreateGroup"
+                    className="bg-[#262626] ml-5 text-white px-4 py-2 mt-2 rounded w-full"
+                  >
+                    Create Group
+                  </Link>
+                </p>
+              </div>
               <div className="flex pl-16 items-center">
                 <button
                   onClick={() => setActiveSection("subscriptions")}
