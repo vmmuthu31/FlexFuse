@@ -11,9 +11,8 @@ import { createKintoSDK } from "kinto-web-sdk";
 
 const kintoSDK = createKintoSDK("0x14A1EC9b43c270a61cDD89B6CbdD985935D897fE");
 
-const contractadddress =
-  "0x14A1EC9b43c270a61cDD89B6CbdD985935D897fE" as Address;
-const kinto = defineChain({
+const contractadddress = "0x14A1EC9b43c270a61cDD89B6CbdD985935D897fE";
+export const kinto = defineChain({
   id: 7887,
   name: "Kinto",
   network: "kinto",
@@ -33,7 +32,7 @@ const kinto = defineChain({
   },
 });
 
-export async function fetchSubscriptionDetails(subscriptionId) {
+export async function fetchSubscriptionDetails(subscriptionId: string) {
   const client = createPublicClient({
     chain: kinto,
     transport: http(),
@@ -56,14 +55,23 @@ export async function fetchSubscriptionDetails(subscriptionId) {
   }
 }
 
-export async function createSubscription(
+interface CreateSubscriptionArgs {
+  subscriptionId: string;
+  serviceProvider: string;
+  amount: number;
+  token: string;
+  startTime: number;
+  interval: number;
+}
+
+export async function createSubscription({
   subscriptionId,
   serviceProvider,
   amount,
   token,
   startTime,
-  interval
-) {
+  interval,
+}: CreateSubscriptionArgs): Promise<void> {
   const data = encodeFunctionData({
     abi: FlexfuseAbi,
     functionName: "createSubscription",
@@ -80,7 +88,17 @@ export async function createSubscription(
   }
 }
 
-export async function sendPayment(receiver, amount, token) {
+interface SendPaymentArgs {
+  receiver: string;
+  amount: number;
+  token: string;
+}
+
+export async function sendPayment({
+  receiver,
+  amount,
+  token,
+}: SendPaymentArgs): Promise<void> {
   const data = encodeFunctionData({
     abi: FlexfuseAbi,
     functionName: "sendPayment",
@@ -97,7 +115,13 @@ export async function sendPayment(receiver, amount, token) {
   }
 }
 
-export async function fetchTransactionHistory(userAddress) {
+interface FetchTransactionHistoryArgs {
+  userAddress: string;
+}
+
+export async function fetchTransactionHistory({
+  userAddress,
+}: FetchTransactionHistoryArgs) {
   const client = createPublicClient({
     chain: kinto,
     transport: http(),
@@ -120,7 +144,15 @@ export async function fetchTransactionHistory(userAddress) {
   }
 }
 
-export async function createGroup(groupId, members) {
+interface CreateGroupArgs {
+  groupId: string;
+  members: string[];
+}
+
+export async function createGroup({
+  groupId,
+  members,
+}: CreateGroupArgs): Promise<void> {
   const data = encodeFunctionData({
     abi: FlexfuseAbi,
     functionName: "createGroup",
@@ -137,7 +169,17 @@ export async function createGroup(groupId, members) {
   }
 }
 
-export async function addPaymentToGroup(groupId, amount, token) {
+interface AddPaymentToGroupArgs {
+  groupId: string;
+  amount: number;
+  token: string;
+}
+
+export async function addPaymentToGroup({
+  groupId,
+  amount,
+  token,
+}: AddPaymentToGroupArgs): Promise<void> {
   const data = encodeFunctionData({
     abi: FlexfuseAbi,
     functionName: "addPayment",
@@ -154,7 +196,17 @@ export async function addPaymentToGroup(groupId, amount, token) {
   }
 }
 
-export async function withdrawPaymentFromGroup(groupId, amount, token) {
+interface WithdrawPaymentFromGroupArgs {
+  groupId: string;
+  amount: number;
+  token: string;
+}
+
+export async function withdrawPaymentFromGroup({
+  groupId,
+  amount,
+  token,
+}: WithdrawPaymentFromGroupArgs): Promise<void> {
   const data = encodeFunctionData({
     abi: FlexfuseAbi,
     functionName: "withdrawPayment",
@@ -171,11 +223,17 @@ export async function withdrawPaymentFromGroup(groupId, amount, token) {
   }
 }
 
-export async function updateSubscription(
+interface UpdateSubscriptionArgs {
+  subscriptionId: string;
+  newAmount: number;
+  newInterval: number;
+}
+
+export async function updateSubscription({
   subscriptionId,
   newAmount,
-  newInterval
-) {
+  newInterval,
+}: UpdateSubscriptionArgs): Promise<void> {
   const data = encodeFunctionData({
     abi: FlexfuseAbi,
     functionName: "updateSubscription",
@@ -192,7 +250,15 @@ export async function updateSubscription(
   }
 }
 
-export async function removeMember(groupId, member) {
+interface RemoveMemberArgs {
+  groupId: string;
+  member: string;
+}
+
+export async function removeMember({
+  groupId,
+  member,
+}: RemoveMemberArgs): Promise<void> {
   const data = encodeFunctionData({
     abi: FlexfuseAbi,
     functionName: "removeMember",
@@ -209,7 +275,13 @@ export async function removeMember(groupId, member) {
   }
 }
 
-export async function deactivateGroup(groupId) {
+interface DeactivateGroupArgs {
+  groupId: string;
+}
+
+export async function deactivateGroup({
+  groupId,
+}: DeactivateGroupArgs): Promise<void> {
   const data = encodeFunctionData({
     abi: FlexfuseAbi,
     functionName: "deactivateGroup",
@@ -226,7 +298,15 @@ export async function deactivateGroup(groupId) {
   }
 }
 
-export async function releasePayment(subscriptionId, groupId) {
+interface ReleasePaymentArgs {
+  subscriptionId: string;
+  groupId: string;
+}
+
+export async function releasePayment({
+  subscriptionId,
+  groupId,
+}: ReleasePaymentArgs): Promise<void> {
   const data = encodeFunctionData({
     abi: FlexfuseAbi,
     functionName: "releasePayment",
@@ -243,7 +323,13 @@ export async function releasePayment(subscriptionId, groupId) {
   }
 }
 
-export async function checkSubscriptionDue(subscriptionId) {
+interface CheckSubscriptionDueArgs {
+  subscriptionId: string;
+}
+
+export async function checkSubscriptionDue({
+  subscriptionId,
+}: CheckSubscriptionDueArgs): Promise<boolean | undefined> {
   const client = createPublicClient({
     chain: kinto,
     transport: http(),
@@ -258,13 +344,17 @@ export async function checkSubscriptionDue(subscriptionId) {
   try {
     const isDue = await contract.read.checkSubscriptionDue([subscriptionId]);
     console.log("Subscription due:", isDue);
-    return isDue;
+    return isDue as boolean;
   } catch (error) {
     console.error("Error checking subscription due:", error);
   }
 }
 
-export async function getGroupMembers(groupId) {
+interface GetGroupMembersArgs {
+  groupId: string;
+}
+
+export async function getGroupMembers({ groupId }: GetGroupMembersArgs) {
   const client = createPublicClient({
     chain: kinto,
     transport: http(),
@@ -285,7 +375,15 @@ export async function getGroupMembers(groupId) {
   }
 }
 
-export async function getGroupPayments(groupId, member) {
+interface GetGroupPaymentsArgs {
+  groupId: string;
+  member: string;
+}
+
+export async function getGroupPayments({
+  groupId,
+  member,
+}: GetGroupPaymentsArgs) {
   const client = createPublicClient({
     chain: kinto,
     transport: http(),
@@ -306,7 +404,7 @@ export async function getGroupPayments(groupId, member) {
   }
 }
 
-export async function getGroupDetails(groupId) {
+export async function getGroupDetails(groupId: string) {
   const client = createPublicClient({
     chain: kinto,
     transport: http(),

@@ -1,39 +1,56 @@
-const webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin');
+const webpack = require("webpack");
+const TerserPlugin = require("terser-webpack-plugin");
+const fs = require("fs");
+const path = require("path");
+
+const appDirectory = fs.realpathSync(process.cwd());
+const resolveApp = (relativePath) => path.resolve(appDirectory, relativePath);
 
 module.exports = {
+  plugins: [
+    {
+      plugin: require("craco-babel-loader"),
+      options: {
+        includes: [resolveApp("../shared")],
+      },
+    },
+  ],
   webpack: {
     alias: {
-      '@mui/styled-engine': '@mui/styled-engine-sc',
+      "@mui/styled-engine": "@mui/styled-engine-sc",
     },
+
     configure: (webpackConfig) => {
       webpackConfig.resolve.fallback = {
         ...webpackConfig.resolve.fallback,
-        path: require.resolve('path-browserify'),
-        process: require.resolve('process/browser'), // Ensure process is aliased correctly
-        assert: require.resolve('assert'),
-        buffer: require.resolve('buffer'),
-        http: require.resolve('stream-http'),
-        https: require.resolve('https-browserify'),
-        os: require.resolve('os-browserify/browser'),
-        stream: require.resolve('stream-browserify'),
-        util: require.resolve('util'),
+        path: require.resolve("path-browserify"),
+        process: require.resolve("process/browser"), // Ensure process is aliased correctly
+        assert: require.resolve("assert"),
+        buffer: require.resolve("buffer"),
+        http: require.resolve("stream-http"),
+        https: require.resolve("https-browserify"),
+        os: require.resolve("os-browserify/browser"),
+        stream: require.resolve("stream-browserify"),
+        util: require.resolve("util"),
       };
 
       const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
-        ({ constructor }) => constructor && constructor.name === 'ModuleScopePlugin'
+        ({ constructor }) =>
+          constructor && constructor.name === "ModuleScopePlugin"
       );
       webpackConfig.resolve.plugins.splice(scopePluginIndex, 1);
 
       webpackConfig.plugins.push(
         new webpack.ProvidePlugin({
-          process: 'process/browser',
-          Buffer: ['buffer', 'Buffer'],
+          process: "process/browser",
+          Buffer: ["buffer", "Buffer"],
         })
       );
 
       const jsRule = webpackConfig.module.rules.find(
-        (rule) => rule.oneOf && rule.oneOf.some((r) => r.test && r.test.toString().includes('js|jsx'))
+        (rule) =>
+          rule.oneOf &&
+          rule.oneOf.some((r) => r.test && r.test.toString().includes("js|jsx"))
       );
 
       if (jsRule) {
@@ -74,6 +91,6 @@ module.exports = {
       };
 
       return webpackConfig;
-    }
-  }
+    },
+  },
 };
