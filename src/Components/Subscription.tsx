@@ -7,17 +7,23 @@ import {
   defineChain,
   createPublicClient,
   http,
+  encodeFunctionData,
 } from "viem";
 import FlexfuseAbi from "../../public/abis/flexfuse.json";
 import { Link } from "react-router-dom";
 import { ethers } from "ethers";
 import { useSearchParams } from "react-router-dom";
 import { FaAngleLeft } from "react-icons/fa6";
+import { toast } from "react-toastify";
+import { createKintoSDK } from "kinto-web-sdk";
+
+const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
 
 const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
 
 const Subscription = () => {
   const [subscriptionDetails, setSubscriptionDetails] = useState<any>();
+  const [subscribesuccess, setSubscribeSuccess] = useState(false);
 
   const [searchParams] = useSearchParams();
 
@@ -60,6 +66,26 @@ const Subscription = () => {
       setSubscriptionDetails(details);
     } catch (error) {
       console.error("Error fetching subscription details:", error);
+    }
+  }
+
+  async function createSubscription() {
+    const id = searchParams.get("id");
+    const data = encodeFunctionData({
+      abi: FlexfuseAbi,
+      functionName: "selectSubscription",
+      args: [id, 0],
+    });
+    try {
+      const response = await kintoSDK.sendTransaction([
+        { to: contractadddress, data, value: BigInt(0) },
+      ]);
+      console.log("Subscription created:", response);
+      toast.success("Subscription Activated Successfully");
+      setSubscribeSuccess(true);
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+      throw error;
     }
   }
 
@@ -112,8 +138,12 @@ const Subscription = () => {
                   </p>
                 </div>
                 <img src="/coins.svg" alt="Subscription" className="mt-5" />
-                <button className="px-7 py-3 bg-black text-white rounded-lg mt-5">
-                  Subscribe Now
+                <button
+                  onClick={createSubscription}
+                  disabled={subscribesuccess}
+                  className="px-7 py-3 bg-black text-white rounded-lg mt-5"
+                >
+                  {subscribesuccess ? "Subscribed" : "Subscribe"}
                 </button>
               </div>
             </div>

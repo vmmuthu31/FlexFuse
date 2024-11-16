@@ -6,6 +6,7 @@ import Home from "Components/Home";
 import Dashboard from "Components/Dashboard";
 import Subscriptions from "Components/Subscriptions";
 import Subscription from "Components/Subscription";
+import CreateSubscription from "Components/CreateSubscription";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/CreateSubscription" element={<CreateSubscription />} />
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/Subscriptions" element={<Subscriptions />} />
           <Route path="/Subscriptions/:id" element={<Subscription />} />
