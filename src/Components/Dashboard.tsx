@@ -212,6 +212,17 @@ const Dashboard = () => {
                   </Link>
                 </p>
               </div>
+              <div className="text-center mt-5">
+                <p>
+            
+                  <Link
+                    to="/crosschain"
+                    className="bg-[#262626] ml-5 text-white px-4 py-2 mt-2 rounded w-full"
+                  >
+                   Pay across chain
+                  </Link>
+                </p>
+              </div>
               <div className="flex pl-16 items-center">
                 <button
                   onClick={() => setActiveSection("subscriptions")}

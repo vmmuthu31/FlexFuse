@@ -168,6 +168,8 @@ contract FlexFuse is ReentrancyGuard {
         nextSubscriptionId++;
     }
 
+
+
     function selectSubscription(
         uint256 subscriptionId,
         Frequency frequency
