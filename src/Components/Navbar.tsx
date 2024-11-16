@@ -156,9 +156,25 @@ function Navbar() {
         <span className=" font-semibold text-2xl">FlexFuse</span>
       </Link>
       <div className="flex gap-8 items-center">
-        <span>Home</span>
-        <span>Services</span>
-        <span>About Us</span>
+        <span>
+          <Link to="/">Home</Link>
+        </span>
+        <span>
+          <a
+            href="/#services"
+            onClick={(e) => {
+              e.preventDefault();
+              document
+                .getElementById("services")
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            Services
+          </a>{" "}
+        </span>
+        <span>
+          <Link to="/Subscriptions">Subscriptions</Link>
+        </span>
         <div>
           <select
           id="chain-selector"

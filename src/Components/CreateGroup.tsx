@@ -10,10 +10,10 @@ const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
 
 const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
 
-function CreateSubscription() {
+function CreateGroup() {
   const router = useNavigate();
 
-  async function createSubscription({
+  async function creategroup({
     name,
     description,
     baseAmount,
@@ -64,7 +64,7 @@ function CreateSubscription() {
 
       console.log("Subscription Args:", args);
 
-      await createSubscription(args);
+      await creategroup(args);
       setResponse("Subscription created successfully!");
     } catch (error) {
       console.error("Error creating subscription:", error);
@@ -170,4 +170,4 @@ function CreateSubscription() {
   );
 }
 
-export default CreateSubscription;
+export default CreateGroup;
