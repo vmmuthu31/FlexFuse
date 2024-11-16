@@ -14,18 +14,23 @@ import FlexfuseAbi from "../../public/abis/flexfuse.json";
 import { Link } from "react-router-dom";
 import { ethers } from "ethers";
 import { useSelector } from "react-redux";
-import { SEPOLIA_CONTRACT_ADDRESS_SENDER } from "../constants";
+import { FLARE_CONTRACT_ADDRESS_SENDER, HEDERA_CONTRACT_ADDRESS_SENDER, SEPOLIA_CONTRACT_ADDRESS_SENDER } from "../constants";
 import { GETSUBSCRIPTION } from "contracts/Integration";
 import { FaAngleLeft } from "react-icons/fa6";
 
 const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
-const ethcontractaddress = SEPOLIA_CONTRACT_ADDRESS_SENDER;
 
 function Subscriptions() {
   const [subscriptionDetails, setSubscriptionDetails] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const network = useSelector((state: any) => state?.network?.network);
+  const ethcontractaddress = 
+  network === 'eth' 
+    ? SEPOLIA_CONTRACT_ADDRESS_SENDER 
+    : network === 'hedera' 
+      ? HEDERA_CONTRACT_ADDRESS_SENDER 
+      : FLARE_CONTRACT_ADDRESS_SENDER;
   const itemsPerPage = 4;
 
   const kinto = defineChain({
@@ -70,6 +75,8 @@ function Subscriptions() {
 
   const fetchSubscriptionDetailsEth = async () => {
     try {
+      console.log("contract", ethcontractaddress);
+      
       const result = await GETSUBSCRIPTION(ethcontractaddress);
       setSubscriptionDetails([...result]?.reverse());
       console.log("result", result);

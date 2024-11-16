@@ -2,6 +2,7 @@
 import SenderAbi from "./abi/SenderAbi.json";
 import StakerAbi from "./abi/StakerAbi.json";
 import tokenabi from "./abi/token.json";
+import ccipAbi from "./abi/CCIPAbi.json";
 import { ethers } from "ethers";
 import Web3 from "web3";
 import { ARBITRUM_SENDER_CONTRACT_ADDRESS, BASE_STAKER_CONTRACT_ADDRESS } from "../constants";
@@ -168,6 +169,398 @@ export const CREATESUBSCRIPTION = async (contractAddress, name, description, bas
     }
 }
 
+export const CREATESUBSCRIPTIONFLARE = async (contractAddress, name, description, baseAmount) => {
+    try {
+        const provider = 
+        window.ethereum != null
+        ? new ethers.providers.Web3Provider(window.ethereum)
+        : ethers.providers.getDefaultProvider();
+            
+        const signer = provider.getSigner();
+        const abi = [
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": true,
+                        "internalType": "uint256",
+                        "name": "subscriptionId",
+                        "type": "uint256"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "description",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": true,
+                        "internalType": "address",
+                        "name": "serviceProvider",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "baseAmount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "SubscriptionCreated",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": true,
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": true,
+                        "internalType": "uint256",
+                        "name": "subscriptionId",
+                        "type": "uint256"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "nextPaymentDue",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "SubscriptionSelected",
+                "type": "event"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "baseAmount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "enum FlexFuse.Frequency",
+                        "name": "frequency",
+                        "type": "uint8"
+                    }
+                ],
+                "name": "calculateCost",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "description",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "baseAmount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "createSubscription",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "getAllSubscriptions",
+                "outputs": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256",
+                                "name": "id",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "name",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "description",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "address payable",
+                                "name": "serviceProvider",
+                                "type": "address"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "baseAmount",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "startTime",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "enum FlexFuse.Frequency",
+                                "name": "frequency",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "bool",
+                                "name": "active",
+                                "type": "bool"
+                            }
+                        ],
+                        "internalType": "struct FlexFuse.Subscription[]",
+                        "name": "",
+                        "type": "tuple[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "enum FlexFuse.Frequency",
+                        "name": "frequency",
+                        "type": "uint8"
+                    }
+                ],
+                "name": "getInterval",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "subscriptionId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "getSubscriptionDetails",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "description",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "serviceProvider",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "baseAmount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "active",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    }
+                ],
+                "name": "getUserSubscriptions",
+                "outputs": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256",
+                                "name": "subscriptionId",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "nextPaymentDue",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "amount",
+                                "type": "uint256"
+                            }
+                        ],
+                        "internalType": "struct FlexFuse.UserSubscription[]",
+                        "name": "",
+                        "type": "tuple[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "subscriptionId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "enum FlexFuse.Frequency",
+                        "name": "frequency",
+                        "type": "uint8"
+                    }
+                ],
+                "name": "selectSubscription",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "subscriptions",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "description",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address payable",
+                        "name": "serviceProvider",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "baseAmount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "startTime",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "enum FlexFuse.Frequency",
+                        "name": "frequency",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "active",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "userSubscriptions",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "subscriptionId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "nextPaymentDue",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "stateMutability": "payable",
+                "type": "receive"
+            }
+        ];
+        const Role = new ethers.Contract(contractAddress, abi, signer);
+        const answer = await Role.createSubscription(name, description, baseAmount);
+        return answer;
+    } catch (error) {
+        console.error('Error getting create subscription:', error);
+    }
+}
+
 export const GETALLGROUPS = async (contractAddress) => {
     try {
         const provider = 
@@ -213,6 +606,22 @@ export const CREATEGROUP = async (contractAddress, name, members) => {
         return answer;
     } catch (error) {
         console.error('Error creating group:', error);
+    }
+}
+
+export const CCIPSEND = async (contractAddress, account, amount) => {
+    try {
+        const provider = 
+        window.ethereum != null
+        ? new ethers.providers.Web3Provider(window.ethereum)
+        : ethers.providers.getDefaultProvider();
+            
+        const signer = provider.getSigner();
+        const Role = new ethers.Contract(contractAddress, ccipAbi, signer);
+        const answer = await Role.sendMessagePayLINK(BASE_DESTINATION_CHAIN_SELECTOR, account, amount);
+        return answer;
+    } catch (error) {
+        console.error('Error sending USDC:', error);
     }
 }
 

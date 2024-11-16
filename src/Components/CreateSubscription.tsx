@@ -5,18 +5,24 @@ import FlexfuseAbi from "../../public/abis/flexfuse.json";
 import { createKintoSDK } from "kinto-web-sdk";
 import { Link, useNavigate } from "react-router-dom";
 import { FaAngleLeft } from "react-icons/fa6";
-import { SEPOLIA_CONTRACT_ADDRESS_SENDER, tokenDefaultAddress } from "../constants";
+import { FLARE_CONTRACT_ADDRESS_SENDER, HEDERA_CONTRACT_ADDRESS_SENDER, SEPOLIA_CONTRACT_ADDRESS_SENDER, tokenDefaultAddress } from "../constants";
 import { useSelector } from "react-redux";
-import { CREATESUBSCRIPTION } from "contracts/Integration";
+import { CREATESUBSCRIPTION, CREATESUBSCRIPTIONFLARE } from "contracts/Integration";
 
 const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
 
 const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
-const ethcontractaddress = SEPOLIA_CONTRACT_ADDRESS_SENDER;
 
 function CreateSubscription() {
   const router = useNavigate();
   const network = useSelector((state: any) => state?.network?.network);
+  const ethcontractaddress = 
+  network === 'eth' 
+    ? SEPOLIA_CONTRACT_ADDRESS_SENDER 
+    : network === 'hedera' 
+      ? HEDERA_CONTRACT_ADDRESS_SENDER 
+      : FLARE_CONTRACT_ADDRESS_SENDER;
+
 
   async function createSubscription({
     name,
@@ -84,7 +90,7 @@ function CreateSubscription() {
     token: string;
   }) => {
     try {
-      const response = await CREATESUBSCRIPTION(ethcontractaddress, name, description, baseAmount, token);
+      const response = network === 'flare' ? await CREATESUBSCRIPTIONFLARE(ethcontractaddress, name, description, baseAmount) : await CREATESUBSCRIPTION(ethcontractaddress, name, description, baseAmount, token);
       console.log("Subscription created:", response);
       router("/Subscriptions");
     } catch (error) {
@@ -113,7 +119,7 @@ function CreateSubscription() {
   const handleCreateSubscriptionMulti = async () => {
     if (network === 'kinto') {
       handleCreateSubscription();
-    } else {
+    } else{
       handleCreateSubscriptionEth();
     }
   }
@@ -171,7 +177,7 @@ function CreateSubscription() {
           <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="block text-sm font-medium mb-2">
-                Base Amount {network === 'kinto' ? "(ETH)" : "(USDC)"}
+                Base Amount {network === 'kinto' || network === 'flare' ? "(ETH)" : "(USDC)"}
               </label>
               <input
                 type="number"
@@ -182,15 +188,17 @@ function CreateSubscription() {
                 className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Token</label>
-              <input
-                type="text"
-                value={defaultToken}
-                disabled
-                className="w-full p-2 border rounded bg-gray-200 text-gray-600"
-              />
-            </div>
+            {network !== 'flare' &&
+              <div>
+                <label className="block text-sm font-medium mb-2">Token</label>
+                <input
+                  type="text"
+                  value={defaultToken}
+                  disabled
+                  className="w-full p-2 border rounded bg-gray-200 text-gray-600"
+                />
+              </div>
+          }
           </div>
         </div>
 

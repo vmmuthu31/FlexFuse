@@ -10,7 +10,7 @@ import {
   http,
 } from "viem";
 import FlexfuseAbi from "../../public/abis/flexfuse.json";
-import { SEPOLIA_CONTRACT_ADDRESS_SENDER } from "../constants";
+import { FLARE_CONTRACT_ADDRESS_SENDER, HEDERA_CONTRACT_ADDRESS_SENDER, SEPOLIA_CONTRACT_ADDRESS_SENDER } from "../constants";
 import { GETGROUPEXPENSE, GETSUBSCRIPTION } from "contracts/Integration";
 import { useAccount } from "wagmi";
 import SubscriptionTable from "./SubscriptionTable";
@@ -18,7 +18,6 @@ import GroupExpensesTable from "./GroupExpensesTable";
 import { Link } from "react-router-dom";
 
 const CONTRACT_ADDRESS = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
-const ethcontractaddress = SEPOLIA_CONTRACT_ADDRESS_SENDER;
 const KINTO_CHAIN = defineChain({
   id: 7887,
   name: "Kinto",
@@ -43,15 +42,21 @@ const Dashboard = () => {
   const walletAddress = useSelector((state: any) => state?.wallet?.address);
   const [subscriptionDetails, setSubscriptionDetails] = useState<any[]>([]);
   const [groupExpenses, setGroupExpenses] = useState<
-    [bigint[], string[], bigint[], boolean[]]
+  [bigint[], string[], bigint[], boolean[]]
   >([[], [], [], []]);
   const [loading, setLoading] = useState(false);
   const network = useSelector((state: any) => state?.network?.network);
   const account = useAccount();
   const [activeSection, setActiveSection] = useState<
-    "subscriptions" | "groups"
+  "subscriptions" | "groups"
   >("subscriptions");
-
+  const ethcontractaddress = 
+  network === 'eth' 
+    ? SEPOLIA_CONTRACT_ADDRESS_SENDER 
+    : network === 'hedera' 
+      ? HEDERA_CONTRACT_ADDRESS_SENDER 
+      : FLARE_CONTRACT_ADDRESS_SENDER;
+  
   const fetchSubscriptionDetails = async () => {
     if (!walletAddress) return;
 
@@ -81,6 +86,8 @@ const Dashboard = () => {
 
   const fetchSubscriptionDetailsEth = async () => {
     if (!account.address) return;
+    console.log("contract", ethcontractaddress);
+    
     try {
       const result = await GETSUBSCRIPTION(ethcontractaddress);
       setSubscriptionDetails((result as any[]).slice(0, 2));
@@ -135,7 +142,7 @@ const Dashboard = () => {
       } else if (activeSection === "groups") {
         fetchGroupExpenses();
       }
-    } else if (network === "eth") {
+    } else if (network === "eth" || network === 'flare') {
       if (activeSection === "subscriptions") {
         fetchSubscriptionDetailsEth();
       } else {
