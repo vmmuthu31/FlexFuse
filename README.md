@@ -17,9 +17,6 @@
   - [For Service Providers](#for-service-providers)
 - [Technical Architecture](#technical-architecture)
 - [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ## Introduction
 
@@ -83,30 +80,3 @@ FlexFuse is an innovative platform that simplifies decentralized finance (DeFi) 
 - **Q2**: Integration with additional blockchains and tokens.
 - **Q3**: Mobile app release and developer incentive programs.
 - **Q4**: Global expansion and partnerships with major DeFi platforms.
-
-## Contributing
-
-We welcome contributions from the community!
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/YourFeature`)
-3. Commit your changes (`git commit -m 'Add YourFeature'`)
-4. Push to the branch (`git push origin feature/YourFeature`)
-5. Open a pull request
-
-Please read our [Contributing Guidelines](CONTRIBUTING.md) for more details.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-- **Website**: [www.FlexFuse.com](https://www.FlexFuse.com)
-- **Email**: support@FlexFuse.com
-- **Twitter**: [@FlexFuse](https://twitter.com/FlexFuse)
-- **Discord**: [Join our community](https://discord.gg/yourdiscordlink)
-
----
-
-*FlexFuse – Simplifying DeFi interactions across blockchains.*
