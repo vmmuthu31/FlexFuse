@@ -13,6 +13,7 @@ import Subscriptions from "Components/Subscriptions";
 import Subscription from "Components/Subscription";
 import CreateSubscription from "Components/CreateSubscription";
 import CreateExpenses from "Components/CreateExpenses";
+import CreateGroup from "Components/CreateGroup";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/Subscriptions" element={<Subscriptions />} />
           <Route path="/Subscriptions/:id" element={<Subscription />} />
           <Route path="/CreateExpenses" element={<CreateExpenses />} />
+          <Route path="/CreateGroup" element={<CreateGroup />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
