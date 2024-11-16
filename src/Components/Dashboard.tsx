@@ -171,7 +171,9 @@ const Dashboard = () => {
                   <p className=" mt-2">Active Subscriptions</p>
                 </div>
                 <div className="text-center text-white p-8 rounded-lg w-60 bg-[#262626] mb-6">
-                  <p className="font-bold text-xl">{groupExpenses.length}</p>
+                  <p className="font-bold text-xl">
+                    {groupExpenses[2]?.reduce((a, b) => a + b, 0n).toString()}
+                  </p>
                   <p className="mt-2">Total Expenses</p>
                 </div>
                 <div className="text-center flex flex-col gap-5  max-w-md mb-6">
@@ -188,6 +190,18 @@ const Dashboard = () => {
                     Create Expense
                   </Link>
                 </div>
+              </div>
+              <div className="text-center mt-5">
+                <p>
+                  Do you don't have a group yet? Create a group and start
+                  sharing expenses.
+                  <Link
+                    to="/CreateGroup"
+                    className="bg-[#262626] ml-5 text-white px-4 py-2 mt-2 rounded w-full"
+                  >
+                    Create Group
+                  </Link>
+                </p>
               </div>
               <div className="flex pl-16 items-center">
                 <button

@@ -1,87 +1,80 @@
-![image](https://github.com/user-attachments/assets/afa04276-6e6f-401d-ad09-136f82aa86be)
+# FlexFuse - Decentralized Expense Management and Multi-Chain Subscription Service
 
-# Sample React Dapp Using Kinto Wallet SDK
-
-This is a sample application demonstrating the integration of the [Kinto Wallet SDK](https://www.npmjs.com/package/kinto-web-sdk). The Kinto Wallet SDK provides a seamless way to interact with Kinto's Ethereum Layer 2 solution, enabling fast and secure transactions.
+![Slide 16_9 - 11](https://github.com/user-attachments/assets/f60b1168-0640-48b3-aa33-eb770bb6effa)
 
 ## Table of Contents
 
-- [Installation](#installation)
+- [Introduction](#introduction)
+- [Features](#features)
+- [How It Works](#how-it-works)
+  - [Subscription Payments](#subscription-payments)
+  - [Group Expense Management](#group-expense-management)
 - [Usage](#usage)
-- [Links](#links)
+  - [For Individuals](#for-individuals)
+  - [For Groups](#for-groups)
+  - [For Service Providers](#for-service-providers)
+- [Technical Architecture](#technical-architecture)
+- [Roadmap](#roadmap)
 
-## Prerequisites
+## Introduction
 
-Before using the sample app, ensure you have a **Kinto Wallet**.
+FlexFuse is an innovative platform that simplifies decentralized finance (DeFi) interactions by providing seamless expense management and multi-chain subscription services. Built on the Kinto platform, FlexFuse leverages User-Owned KYC, Account Abstraction, and cross-chain interoperability to enable secure, non-custodial, and transparent transactions across various blockchains.
 
-Create an account by visiting [Kinto Onboarding](https://engen.kinto.xyz/onboarding).
+## Features
 
-## Installation
+- **Multi-Chain Recurring Payments**: Subscribe to services using any token on any supported blockchain.
+- **Transparent Expense Management**: Split bills, track expenses, and settle payments within groups.
+- **User-Owned KYC**: Enhanced trust and compliance with decentralized KYC verification.
+- **Gasless Transactions**: No need for users to hold native tokens for gas fees.
+- **Customizable Payment Options**: Accepts a wide range of tokens and supports major blockchains.
+- **Subscription Analytics**: Dashboards for users and providers to track spending and revenues.
+- **Shared Wallet Subscriptions**: Groups can collectively subscribe to services using a shared wallet.
+- **Developer Incentives**: Mining rewards for developers building on FlexFuse.
 
-To get started with the sample app, follow these steps:
+## How It Works
 
-1. **Clone the Repository**: Clone this repository to your local machine.
+### Subscription Payments
 
-```bash
-git clone https://github.com/KintoXYZ/react-sdk-sample
-```
+- **Users** pay for subscriptions using their preferred tokens and blockchains.
+- **FlexFuse** automatically converts and transfers payments to the service provider's preferred tokens and chains.
+- **Service Providers** receive payments seamlessly without worrying about token or chain incompatibilities.
 
-2. **Navigate to the Project Directory**: Change into the project directory.
+### Group Expense Management
 
-```bash
-cd react-sdk-sample
-```
-
-3. **Install Dependencies**: Use Yarn to install the necessary dependencies.
-
-```bash
-yarn install
-```
-
-4. **Set up a local certificate**: Needed to run the app on https.
-
-```bash
-brew install mkcert
-mkcert -install
-mkcert dev.kinto.xyz localhost 127.0.0.1 ::1
-
-// You should see something like this
-The certificate is at "./dev.kinto.xyz+3.pem" and the key at "./dev.kinto.xyz+3-key.pem" ✅
-```
-
-5. **Set up a local DNS**: Change the `etc/hosts` file to run the app locally on dev.kinto.xyz.
-
-```bash
-sudo nano /etc/hosts
-
-// Add the following line and save the file
-127.0.0.1       dev.kinto.xyz
-```
-
-6. **Start the Application**: Run the app using Yarn.
-
-```bash
-yarn start
-```
+- **Create Groups**: Users can form groups to manage shared expenses.
+- **Add Expenses**: Expenses are added to a shared ledger with transparent tracking.
+- **Settle Payments**: Members settle their balances using their preferred tokens and chains, with automatic conversions handled by FlexFuse.
 
 ## Usage
 
-Once the application is running, you can explore the features provided by the Kinto Wallet SDK. This sample app demonstrates how to connect to a Kinto wallet, send transactions, and manage wallet interactions.
+### For Individuals
 
-### Using your application
+- **Subscribe to Services**: Use any token on any chain to subscribe to decentralized services.
+- **Manage Subscriptions**: View and manage all your subscriptions in one place.
+- **Expense Tracking**: Keep track of your personal expenses across different services.
 
-1. **Developer Account**: Create a developer account, deploy a contract, and create the application. Use your main contract address as the app address. Visit [Kinto Developers](https://engen.kinto.xyz/developers) to get started.
+### For Groups
 
-2. **Set the App Address**: Ensure you have set the app address in `App.tsx` in the `counterAddress` variable and make sure the Kinto Wallet SDK is initialized with that address.
+- **Create a Group**: Form a group with friends, family, or colleagues.
+- **Shared Expenses**: Add and track shared expenses in real-time.
+- **Collective Subscriptions**: Subscribe to services as a group using a shared wallet.
 
-## Links
+### For Service Providers
 
-- **Kinto Wallet SDK Package**: [Kinto Wallet SDK on npm](https://www.npmjs.com/package/kinto-web-sdk)
-- **Kinto Documentation**: [Kinto SDK Documentation](https://docs.kinto.xyz/kinto-the-safe-l2/building-on-kinto/development-setup)
-- **Kinto Developer Portal**: [Kinto Developer Portal](https://engen.kinto.xyz/developers)
+- **Integrate with FlexFuse**: Expand your user base by accepting payments from any token and chain.
+- **Analytics Dashboard**: Access metrics on subscriber counts and revenue.
+- **Compliance**: Benefit from enhanced trust with User-Owned KYC and compliance tools.
 
-For more information on how to use the Kinto Wallet SDK, please refer to the [Kinto Wallet SDK documentation](https://docs.kinto.xyz/kinto-the-safe-l2/building-on-kinto/development-setup).
+## Technical Architecture
 
----
+- **Built on Kinto**: Utilizes Kinto’s User-Owned KYC and Account Abstraction.
+- **Cross-Chain Compatibility**: Employs protocols like Connext and LayerZero for seamless interoperability.
+- **Smart Contracts**: Secure, modular, and transparent contracts audited for best practices.
+- **Frontend**: Developed with React for a responsive user interface.
 
-This README provides a quick start guide for developers looking to integrate the Kinto Wallet SDK into their applications. For detailed documentation and advanced usage, please visit the links provided above.
+## Roadmap
+
+- **Q1**: Beta launch with core features like subscription payments and expense management.
+- **Q2**: Integration with additional blockchains and tokens.
+- **Q3**: Mobile app release and developer incentive programs.
+- **Q4**: Global expansion and partnerships with major DeFi platforms.
