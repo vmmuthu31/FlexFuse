@@ -27,7 +27,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
           <tr className="text-center" key={index}>
             <td colSpan={4} className="p-2">
               <div className="flex items-center justify-between bg-white bg-opacity-[50%] border rounded-lg p-4 shadow-md">
-                <span className="w-1/4">{subscription.name || "N/A"}</span>
+                <span className="w-1/4 ">{subscription.name || "N/A"}</span>
                 <span className="w-1/4">
                   {subscription.baseAmount
                     ? Number(subscription.baseAmount)

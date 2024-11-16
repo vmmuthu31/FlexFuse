@@ -13,6 +13,7 @@ import {
 import FlexfuseAbi from "../../public/abis/flexfuse.json";
 import { Link } from "react-router-dom";
 import { ethers } from "ethers";
+import { FaAngleLeft } from "react-icons/fa6";
 
 const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
 
@@ -86,12 +87,24 @@ function Subscriptions() {
       <Navbar />
       <main className="flex-grow pb-20">
         <div className="text-center">
-          <p className="font-playfair italic font-bold text-3xl mt-5">
-            Explore New Subscriptions
-          </p>
-          <p className="font-dmsans pt-3 text-lg">
-            Browse services and subscribe to the ones that suit your needs.
-          </p>
+          <div className="flex  justify-between pl-20">
+            <Link
+              to="/Dashboard"
+              className="flex gap-2 items-center text-black font-dmsans text-lg"
+            >
+              <FaAngleLeft />
+              <span> Back</span>
+            </Link>
+            <div className="text-center">
+              <p className="font-playfair italic font-bold text-3xl mt-5">
+                Explore New Subscriptions
+              </p>
+              <p className="font-dmsans pt-3 text-lg">
+                Browse services and subscribe to the ones that suit your needs.
+              </p>
+            </div>
+            <div></div>
+          </div>
           <div>
             <div className="flex gap-3 items-center justify-center mt-5">
               <div className="relative w-full max-w-md">
@@ -119,26 +132,37 @@ function Subscriptions() {
                       key={index}
                       className="p-4 py-6 bg-[#262626] text-white shadow-md rounded-md"
                     >
-                      <h3 className="font-bold text-xl">{subscription.name}</h3>
-                      <p className="text-gray-600">
-                        {subscription.description}
-                      </p>
-                      <p>
-                        <div className="flex gap-1 items-center">
-                          <p>
-                            {ethers.utils.formatEther(subscription.baseAmount)}{" "}
-                            Kinto/Month
+                      <div className="flex flex-col font-albertsans justify-between h-full">
+                        <div>
+                          <h3 className="font-bold  text-3xl">
+                            {subscription.name}
+                          </h3>
+                          <p className="text-white text-opacity-[60%]">
+                            {subscription.description}
                           </p>
-                          <img src="/coins.svg" alt="Coins" />
+                          <p className="flex justify-center flex-col gap-3">
+                            <p className="text-center mt-3 text-[18px]">
+                              {ethers.utils.formatEther(
+                                subscription.baseAmount
+                              )}{" "}
+                              Kinto/Month
+                            </p>
+                            <img
+                              src="/coins.svg"
+                              className="w-24 block mx-auto"
+                              alt="Coins"
+                            />
+                          </p>
                         </div>
-                      </p>
-                      <Link
-                        to={`/Subscriptions/Subscription?id=${subscription.id}`}
-                      >
-                        <button className="bg-white text-black mt-3 py-2 px-4 rounded">
-                          Learn More
-                        </button>
-                      </Link>
+                        <Link
+                          to={`/Subscriptions/Subscription?id=${subscription.id}`}
+                          className=""
+                        >
+                          <button className="bg-white w-full text-black mt-3 py-2 px-4 rounded">
+                            Learn More
+                          </button>
+                        </Link>
+                      </div>
                     </div>
                   ))}
                 </div>

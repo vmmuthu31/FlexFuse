@@ -30,7 +30,7 @@ function Home() {
               className="w-20 block -rotate-6 mx-auto h-20"
               alt="KintoHub Logo"
             />
-            <p className="font-dmsans italic font-semibold text-5xl">
+            <p className="font-dmsans italic font-semibold text-6xl">
               Simplify Multi-Chain Subscriptions and Group Payments
             </p>
             <p className="font-albertsans px-32 font-medium text-lg">
@@ -61,7 +61,7 @@ function Home() {
       </div>
 
       <div className="text-center font-dmsans mt-20">
-        <p id="services" className="text-2xl font-semibold">
+        <p id="services" className="text-4xl font-semibold">
           Why Choose FlexFuse?
         </p>
         <p className="mt-3">
@@ -69,7 +69,7 @@ function Home() {
           for <br /> decentralized expense and subscription management.
         </p>
       </div>
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="flex justify-center gap-5 pb-4 pt-10">
           <div className="flex items-center text-white w-full font-dmsans pl-10 rounded-lg bg-[#262626]">
             <div>
@@ -91,12 +91,12 @@ function Home() {
           </div>
           <img
             src="/tokenswap.svg"
-            className="w-[328px] h-80 rounded-lg"
+            className="w-[368px] h-80 rounded-lg"
             alt="KintoHub Logo"
           />
         </div>
-        <div className="flex gap-4 justify-center">
-          <div className="flex flex-col items-center py-7 px-3 text-white font-dmsans  rounded-xl gap-4 bg-[#262626]">
+        <div className="flex gap-4 w-full justify-center">
+          <div className="flex flex-col items-center py-7 px-10 text-white font-dmsans  rounded-xl gap-4 bg-[#262626]">
             <img
               src="/expensetracker.svg"
               className="w-80 h-80 rounded-t-lg"
@@ -112,7 +112,7 @@ function Home() {
               </p>
             </div>
           </div>
-          <div className="flex flex-col items-center py-7 px-3 text-white font-dmsans  rounded-xl gap-4 bg-[#262626]">
+          <div className="flex flex-col items-center py-7 px-10 text-white font-dmsans  rounded-xl gap-4 bg-[#262626]">
             <img
               src="/crosschain.svg"
               className="w-80 h-80 rounded-t-lg"
@@ -128,7 +128,7 @@ function Home() {
               </p>
             </div>
           </div>
-          <div className="flex flex-col items-center py-7 px-3 text-white font-dmsans  rounded-xl gap-4 bg-[#262626]">
+          <div className="flex flex-col items-center py-7 px-10 text-white font-dmsans  rounded-xl gap-4 bg-[#262626]">
             <img
               src="/invoicetracker.svg"
               className="w-80 h-80 rounded-t-lg"
@@ -148,7 +148,7 @@ function Home() {
         <div className="flex justify-center gap-5 py-3">
           <img
             src="/network.svg"
-            className="w-[498px] h-80 rounded-lg"
+            className="w-[568px] h-80 rounded-lg"
             alt="KintoHub Logo"
           />
           <div className="flex  justify-between w-full items-center text-white font-dmsans pl-10 rounded-lg bg-[#262626]">
@@ -170,7 +170,7 @@ function Home() {
           </div>
         </div>
         <div className="text-center font-dmsans mt-20">
-          <p className="text-2xl font-semibold">How It Works?</p>
+          <p className="text-4xl font-semibold">How It Works?</p>
           <p className="mt-3">
             Explore the powerful features that make FlexFuse the ultimate
             platform for <br /> decentralized expense and subscription
@@ -178,8 +178,8 @@ function Home() {
           </p>
         </div>
       </div>
-      <div className="max-w-4xl mx-auto">
-        <div className="flex gap-5 pb-5  mt-10  justify-center">
+      <div className="max-w-[820px] mt-10 mb-32 mx-auto">
+        <div className="flex gap-2 pb-5  mt-10  justify-center">
           <div className="bg-[#262626] w-1/2 px-5 pt-5 rounded-lg text-white">
             <p className="text-xl ">
               Create or Connect <br /> Your Wallet
@@ -210,7 +210,7 @@ function Home() {
             </div>
           </div>
         </div>
-        <div className="flex gap-5 pb-5   mt-5  justify-center">
+        <div className="flex gap-2 pb-5   mt-5  justify-center">
           <div className="bg-[#262626] w-1/2 px-5 pt-5 rounded-lg text-white">
             <p className="text-xl ">
               Settle Payments <br /> Easily
@@ -250,7 +250,7 @@ function Home() {
           backgroundSize: "contain",
           backgroundPositionY: "50%",
           width: "100%",
-          height: "47vh",
+          height: "60vh",
           backgroundRepeat: "no-repeat",
           display: "flex",
           flexDirection: "column",
@@ -282,7 +282,7 @@ function Home() {
           </p>
         </Link>
       </div>
-      <div className="flex font-albertsans mb-5 justify-between px-14">
+      <div className="flex font-albertsans mb-12 justify-between px-20">
         <div>
           <div className="flex gap-3 items-center">
             <img src="/logo.svg" alt="KintoHub Logo" />

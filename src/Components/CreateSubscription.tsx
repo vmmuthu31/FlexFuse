@@ -3,7 +3,8 @@ import Navbar from "./Navbar";
 import { encodeFunctionData, defineChain } from "viem";
 import FlexfuseAbi from "../../public/abis/flexfuse.json";
 import { createKintoSDK } from "kinto-web-sdk";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FaAngleLeft } from "react-icons/fa6";
 
 const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
 
@@ -74,12 +75,25 @@ function CreateSubscription() {
   return (
     <div className="bg-gray-100 min-h-screen">
       <Navbar />
+      <div className="flex  justify-between pl-20">
+        <Link
+          to="/Dashboard"
+          className="flex gap-2 items-center text-black font-dmsans text-lg"
+        >
+          <FaAngleLeft />
+          <span> Back</span>
+        </Link>
+        <div className="text-center mt-5">
+          <p className="font-playfair italic font-bold text-3xl mt-5">
+            Create a New Subscription
+          </p>
+          <p className="font-dmsans pt-3 text-lg">
+            Fill in the details to create a new subscription.{" "}
+          </p>
+        </div>
+        <div></div>
+      </div>
       <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-4xl font-extrabold mb-8 text-center">
-          FlexFuse Interface
-        </h1>
-
-        {/* Dynamic Input Fields */}
         <div className="bg-white p-6 shadow rounded-md mb-6">
           <h2 className="text-xl font-bold mb-4">Create a New Subscription</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
