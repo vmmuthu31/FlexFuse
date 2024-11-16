@@ -5,13 +5,18 @@ import FlexfuseAbi from "../../public/abis/flexfuse.json";
 import { createKintoSDK } from "kinto-web-sdk";
 import { Link, useNavigate } from "react-router-dom";
 import { FaAngleLeft } from "react-icons/fa6";
+import { SEPOLIA_CONTRACT_ADDRESS_SENDER, tokenDefaultAddress } from "../constants";
+import { useSelector } from "react-redux";
+import { CREATESUBSCRIPTION } from "contracts/Integration";
 
 const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
 
 const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
+const ethcontractaddress = SEPOLIA_CONTRACT_ADDRESS_SENDER;
 
 function CreateSubscription() {
   const router = useNavigate();
+  const network = useSelector((state: any) => state?.network?.network);
 
   async function createSubscription({
     name,
@@ -48,7 +53,7 @@ function CreateSubscription() {
     description: "",
     baseAmount: "",
   });
-  const defaultToken = "0x010700808D59d2bb92257fCafACfe8e5bFF7aB87";
+  const defaultToken = network === 'kinto' ? tokenDefaultAddress.kinto : tokenDefaultAddress.sepolia;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFields({ ...fields, [e.target.name]: e.target.value });
@@ -71,6 +76,48 @@ function CreateSubscription() {
       setResponse(`Error: ${error}`);
     }
   };
+
+  const createSubscriptionEth = async ({name, description, baseAmount, token} : {
+    name: string;
+    description: string;
+    baseAmount: number;
+    token: string;
+  }) => {
+    try {
+      const response = await CREATESUBSCRIPTION(ethcontractaddress, name, description, baseAmount, token);
+      console.log("Subscription created:", response);
+      router("/Subscriptions");
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+      throw error;
+    }
+  }
+  const handleCreateSubscriptionEth = async () => {
+    try {
+      const args = {
+        ...fields,
+        baseAmount: Number(fields.baseAmount),
+        token: defaultToken,
+      };
+
+      console.log("Subscription Args:", args);
+
+      await createSubscriptionEth(args);
+      setResponse("Subscription created successfully!");
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+      setResponse(`Error: ${error}`);
+    }
+  };
+
+  const handleCreateSubscriptionMulti = async () => {
+    if (network === 'kinto') {
+      handleCreateSubscription();
+    } else {
+      handleCreateSubscriptionEth();
+    }
+  }
+
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -124,7 +171,7 @@ function CreateSubscription() {
           <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="block text-sm font-medium mb-2">
-                Base Amount (ETH)
+                Base Amount {network === 'kinto' ? "(ETH)" : "(USDC)"}
               </label>
               <input
                 type="number"
@@ -150,7 +197,7 @@ function CreateSubscription() {
         {/* Action Button */}
         <div className="text-center">
           <button
-            onClick={handleCreateSubscription}
+            onClick={handleCreateSubscriptionMulti}
             className="bg-green-500 text-white py-3 px-6 rounded shadow-md hover:bg-green-600"
           >
             Create Subscription

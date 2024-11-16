@@ -50,6 +50,22 @@ export const GETSUBSCRIPTION = async (contractAddress) => {
     }
 }
 
+export const GETGROUPEXPENSE= async (contractAddress) => {
+    try {
+        const provider = 
+        window.ethereum != null
+        ? new ethers.providers.Web3Provider(window.ethereum)
+        : ethers.providers.getDefaultProvider();
+            
+        const signer = provider.getSigner();
+        const Role = new ethers.Contract(contractAddress, SenderAbi, signer);
+        const answer = await Role.getAllGroups();
+        return answer;
+    } catch (error) {
+        console.error('Error sending USDC:', error);
+    }
+}
+
 export const GETSUBSCRIPTIONID = async (contractAddress, id) => {
     try {
         const provider = 
@@ -132,9 +148,25 @@ export const GETSUBSCRIPTIONBYADDRESS = async (contractAddress, walletAddress) =
         const answer = await Role.getUserSubscriptions(walletAddress);
         return answer;
     } catch (error) {
-        console.error('Error getting subscription id detail:', error);
+        console.error('Error getting subscription wallet detail:', error);
     }
 }
+export const CREATESUBSCRIPTION = async (contractAddress, name, description, baseAmount, token) => {
+    try {
+        const provider = 
+        window.ethereum != null
+        ? new ethers.providers.Web3Provider(window.ethereum)
+        : ethers.providers.getDefaultProvider();
+            
+        const signer = provider.getSigner();
+        const Role = new ethers.Contract(contractAddress, SenderAbi, signer);
+        const answer = await Role.createSubscription(name, description, baseAmount, token);
+        return answer;
+    } catch (error) {
+        console.error('Error getting create subscription:', error);
+    }
+}
+
 
 export const BALANCEOFUSER = async (account) => {
     try {

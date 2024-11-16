@@ -71,7 +71,7 @@ function Subscriptions() {
   const fetchSubscriptionDetailsEth = async () => {
     try {
       const result = await GETSUBSCRIPTION(ethcontractaddress);
-      setSubscriptionDetails((result as any[]).reverse());
+      setSubscriptionDetails([...result]?.reverse());
       console.log("result", result);
     } catch (error) {
       console.log("error", error);

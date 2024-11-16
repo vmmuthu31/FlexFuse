@@ -11,7 +11,7 @@ import {
 } from "viem";
 import FlexfuseAbi from "../../public/abis/flexfuse.json";
 import { SEPOLIA_CONTRACT_ADDRESS_SENDER } from "../constants";
-import { GETSUBSCRIPTIONBYADDRESS } from "contracts/Integration";
+import { GETGROUPEXPENSE, GETSUBSCRIPTION } from "contracts/Integration";
 import { useAccount } from "wagmi";
 import SubscriptionTable from "./SubscriptionTable";
 import GroupExpensesTable from "./GroupExpensesTable";
@@ -71,6 +71,7 @@ const Dashboard = () => {
 
       const details = await contract.read.getAllSubscriptions();
       setSubscriptionDetails((details as any[]).slice(0, 2));
+      console.log("details", subscriptionDetails);
     } catch (error) {
       console.error("Error fetching subscription details:", error);
     } finally {
@@ -79,10 +80,11 @@ const Dashboard = () => {
   };
 
   const fetchSubscriptionDetailsEth = async () => {
+    if (!account.address) return;
     try {
-      const result = await GETSUBSCRIPTIONBYADDRESS(ethcontractaddress, account?.address);
-      setSubscriptionDetails(result as any[]);
-      console.log("result", result);
+      const result = await GETSUBSCRIPTION(ethcontractaddress);
+      setSubscriptionDetails((result as any[]).slice(0, 2));
+      console.log("result", subscriptionDetails);
     } catch (error) {
       console.log("error", error);
     }
@@ -106,7 +108,7 @@ const Dashboard = () => {
       });
 
       const groups = await contract.read.getAllGroups();
-      console.log("groups", groups);
+      console.log("groups kinto", groups);
       setGroupExpenses(groups as [bigint[], string[], bigint[], boolean[]]);
     } catch (error) {
       console.error("Error fetching group expenses:", error);
@@ -115,17 +117,34 @@ const Dashboard = () => {
     }
   };
 
+  const fetchGroupExpensesEth = async () => {
+    if (!account.address) return;
+    try {
+      const result = await GETGROUPEXPENSE(ethcontractaddress);
+      setGroupExpenses(result as [bigint[], string[], bigint[], boolean[]]);
+      console.log("group", groupExpenses);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
   useEffect(() => {
-    if(network === 'kinto') {
+    if (network === "kinto") {
       if (activeSection === "subscriptions") {
-      fetchSubscriptionDetails();
-    } else {
-      fetchSubscriptionDetailsEth();
-    }    } else if (activeSection === "groups") {
-      fetchGroupExpenses();
+        fetchSubscriptionDetails();
+      } else if (activeSection === "groups") {
+        fetchGroupExpenses();
+      }
+    } else if (network === "eth") {
+      if (activeSection === "subscriptions") {
+        fetchSubscriptionDetailsEth();
+      } else {
+        fetchGroupExpensesEth();
+      }
     }
     // eslint-disable-next-line
-  }, [activeSection]);
+  }, [activeSection, network]);
+  
 
   return (
     <div className="bg-[#E8E8E8] flex flex-col justify-between min-h-screen">
