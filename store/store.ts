@@ -16,8 +16,6 @@ const walletSlice = createSlice({
   },
 });
 
-// network slice
-
 const networkSlice = createSlice({
   name: "network",
   initialState: { network: "kinto" },
