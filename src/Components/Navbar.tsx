@@ -144,9 +144,15 @@ function Navbar() {
   useEffect(()=>{
     if(network === "eth"){
       setSelectedChain("eth");
-    } else{
+    } else if (network === "kinto"){
       setSelectedChain("kinto");
-    }
+    } 
+    else if (network === "hedera"){
+      setSelectedChain("hedera");
+    } 
+    else if (network === "flare"){
+      setSelectedChain("flare");
+    } 
   },[]);
 
   return (
@@ -184,10 +190,12 @@ function Navbar() {
         >
           <option value="kinto">Kinto</option>
           <option value="eth">Ethereum</option>
+          <option value="hedera">Hedera</option>
+          <option value="flare">Flare</option>
         </select>
         </div>
 
-        {network === "eth" ? 
+        {network === "eth" || network === "hedera" || network === "flare" ? 
           <Wallet />
         :
           <div>

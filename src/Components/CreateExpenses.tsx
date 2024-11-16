@@ -14,10 +14,15 @@ import {
 import FlexfuseAbi from "../../public/abis/flexfuse.json";
 import { createKintoSDK } from "kinto-web-sdk";
 import { toast } from "react-toastify";
+import { SEPOLIA_CONTRACT_ADDRESS_SENDER, tokenDefaultAddress } from "../constants";
+import { useSelector } from "react-redux";
+import { ADDEXPENSE, GETALLGROUPS } from "contracts/Integration";
 
 const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
 
 const CONTRACT_ADDRESS = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
+const ethcontractaddress = SEPOLIA_CONTRACT_ADDRESS_SENDER;
+
 const KINTO_CHAIN = defineChain({
   id: 7887,
   name: "Kinto",
@@ -40,6 +45,7 @@ const KINTO_CHAIN = defineChain({
 
 function CreateExpenses() {
   const Navigate = useNavigate();
+  const network = useSelector((state: any) => state?.network?.network);
   const [groupExpenses, setGroupExpenses] = useState<
     [bigint[], string[], bigint[], boolean[]]
   >([[], [], [], []]);
@@ -53,7 +59,7 @@ function CreateExpenses() {
     groupId: number;
     amount: number;
   }): Promise<void> {
-    const token = "0x010700808D59d2bb92257fCafACfe8e5bFF7aB87";
+    const token = tokenDefaultAddress.kinto;
     const data = encodeFunctionData({
       abi: FlexfuseAbi,
       functionName: "addExpense",
@@ -64,6 +70,27 @@ function CreateExpenses() {
       const response = await kintoSDK.sendTransaction([
         { to: CONTRACT_ADDRESS, data, value: BigInt(0) },
       ]);
+      console.log("Expenses created:", response);
+      toast.success("Expenses created successfully!");
+      Navigate("/Dashboard");
+    } catch (error) {
+      console.error("Error creating expenses:", error);
+      toast.error(
+        "Error creating expenses. Check the console for more details."
+      );
+    }
+  }
+  
+  async function createExpensesEth({
+    groupId,
+    amount,
+  }: {
+    groupId: number;
+    amount: number;
+  }){
+    const token = tokenDefaultAddress.sepolia;
+    try {
+      const response = await ADDEXPENSE(ethcontractaddress, groupId, amount, token);
       console.log("Expenses created:", response);
       toast.success("Expenses created successfully!");
       Navigate("/Dashboard");
@@ -104,9 +131,27 @@ function CreateExpenses() {
     }
   };
 
+  const fetchGroupExpensesEth = async () => {
+    try {
+
+      const groups = await GETALLGROUPS(ethcontractaddress);
+      setGroupExpenses(groups as [bigint[], string[], bigint[], boolean[]]);
+      console.log('groups', groups);
+      if (groups[0] && groups[0].length > 0) {
+        setGroupId(Number(groups[0][0]));
+      }
+    } catch (error) {
+      console.error("Error fetching group expenses:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchGroupExpenses();
-  }, []);
+    if (network === 'kinto') {
+      fetchGroupExpenses();
+    } else {
+      fetchGroupExpensesEth();
+    }
+  }, [network]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,8 +160,11 @@ function CreateExpenses() {
       toast.warning("Please fill in both Group ID and Amount.");
       return;
     }
-
-    createExpenses({ groupId: Number(groupId), amount: Number(amount) });
+    if (network === 'kinto') {
+      createExpenses({ groupId: Number(groupId), amount: Number(amount) })
+    } else {
+      createExpensesEth({ groupId: Number(groupId), amount: Number(amount) })
+    }
   };
 
   return (

@@ -488,11 +488,6 @@
 				"internalType": "uint256",
 				"name": "_amount",
 				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "platformAddress",
-				"type": "address"
 			}
 		],
 		"name": "sendMessagePayLINK",
@@ -525,6 +520,42 @@
 			}
 		],
 		"name": "sendPayment",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "_destinationChainSelector",
+				"type": "uint64"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_gasLimit",
+				"type": "uint256"
+			}
+		],
+		"name": "setGasLimitForDestinationChain",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "_destinationChainSelector",
+				"type": "uint64"
+			},
+			{
+				"internalType": "address",
+				"name": "_receiver",
+				"type": "address"
+			}
+		],
+		"name": "setReceiverForDestinationChain",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -640,25 +671,6 @@
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "sender",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "USDCReceived",
-		"type": "event"
 	},
 	{
 		"inputs": [

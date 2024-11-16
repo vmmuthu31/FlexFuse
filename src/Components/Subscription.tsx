@@ -17,8 +17,9 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { createKintoSDK } from "kinto-web-sdk";
 import { useSelector } from "react-redux";
-import { GETSUBSCRIPTIONID, SUBSCRIBE } from "contracts/Integration";
+import { CCIPSEND, GETSUBSCRIPTIONID, SUBSCRIBE } from "contracts/Integration";
 import { SEPOLIA_CONTRACT_ADDRESS_SENDER } from "../constants";
+import { useAccount } from "wagmi";
 
 const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
 
@@ -28,9 +29,10 @@ const Subscription = () => {
   const [subscriptionDetails, setSubscriptionDetails] = useState<any>();
   const [subscribesuccess, setSubscribeSuccess] = useState(false);
   const network = useSelector((state: any) => state?.network?.network);
+  const [amount, setAmount] = useState('100');
 
   const [searchParams] = useSearchParams();
-
+  const account = useAccount();
   const kinto = defineChain({
     id: 7887,
     name: "Kinto",
@@ -50,7 +52,7 @@ const Subscription = () => {
       default: { name: "Explorer", url: "https://kintoscan.io" },
     },
   });
-
+  const [model, setModel] = useState(false);
   async function fetchSubscriptionDetails() {
     const client = createPublicClient({
       chain: kinto,
@@ -118,6 +120,24 @@ const Subscription = () => {
       throw error;
     }
   }
+
+  const handlePayment = async(paymentMethod : any) => {
+    if (paymentMethod === "native") {
+      console.log("Paying with Native Tokens...");
+
+      createSubscriptionEth();
+      // Add logic for Native Tokens payment
+    } else if (paymentMethod === "usdc") {
+      console.log("Paying with USDC...");
+
+      const result = await CCIPSEND('0xc5Ff1aBaBca988e7e934F4cF966e0dd8607D4A46', account?.address, amount);
+      console.log("result of ccip", result);
+      toast.success("Subscription Activated Successfully");
+      setSubscribeSuccess(true);
+      // Add logic for USDC payment
+    }
+    setModel(false); // Close the modal after selection
+  };  
 
   useEffect(() => {
     if (network === 'kinto') {
@@ -187,6 +207,69 @@ const Subscription = () => {
         }
 
         {network === 'eth' && 
+          <div className="mt-10">
+            {subscriptionDetails && (
+              <div className="flex pl-20 text-left ">
+                <div>
+                  <h3 className="font-bold text-3xl text-[#262626]">
+                    {subscriptionDetails[0]}
+                  </h3>
+                  <p className="text-gray-600">{subscriptionDetails[1]}</p>
+
+                  <p className="text-2xl pt-3 font-albertsans font-medium text-[#262626]">
+                    {BigInt(subscriptionDetails[3]).toString()} USDC/Month
+                  </p>
+                  <p className="text-gray-600">
+                    Monthly, Annual, or One-Time Payment.
+                  </p>
+                  <div className="w-32 text-center pt-3">
+                    <p className="bg-[#9CE6BA] border-[#005F26] p-1 text-sm rounded-full border-[1px]">
+                      • 7-day free trial
+                    </p>
+                  </div>
+                  <img src="/coins.svg" alt="Subscription" className="mt-5" />
+                  <button
+                    onClick={() => setModel(true)}
+                    disabled={subscribesuccess}
+                    className="px-7 py-3 bg-black text-white rounded-lg mt-5"
+                  >
+                    {subscribesuccess ? "Subscribed" : "Subscribe"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        }
+
+        {model && (
+              <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-md">
+                  <h2 className="text-xl font-bold text-center mb-4">Payment Options</h2>
+                  <div className="space-y-4">
+                    <button
+                      onClick={() => handlePayment("native")}
+                      className="w-full px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600"
+                    >
+                      Pay with Native Tokens
+                    </button>
+                    <button
+                      onClick={() => handlePayment("usdc")}
+                      className="w-full px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600"
+                    >
+                      Pay with USDC
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => setModel(false)}
+                    className="mt-4 w-full px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+
+        {network === 'flare' && 
           <div className="mt-10">
             {subscriptionDetails && (
               <div className="flex pl-20 text-left ">

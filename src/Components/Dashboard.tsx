@@ -10,7 +10,11 @@ import {
   http,
 } from "viem";
 import FlexfuseAbi from "../../public/abis/flexfuse.json";
-import { SEPOLIA_CONTRACT_ADDRESS_SENDER } from "../constants";
+import {
+  FLARE_CONTRACT_ADDRESS_SENDER,
+  HEDERA_CONTRACT_ADDRESS_SENDER,
+  SEPOLIA_CONTRACT_ADDRESS_SENDER,
+} from "../constants";
 import { GETGROUPEXPENSE, GETSUBSCRIPTION } from "contracts/Integration";
 import { useAccount } from "wagmi";
 import SubscriptionTable from "./SubscriptionTable";
@@ -22,7 +26,6 @@ import { TiGroup } from "react-icons/ti";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 
 const CONTRACT_ADDRESS = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
-const ethcontractaddress = SEPOLIA_CONTRACT_ADDRESS_SENDER;
 const KINTO_CHAIN = defineChain({
   id: 7887,
   name: "Kinto",
@@ -55,6 +58,12 @@ const Dashboard = () => {
   const [activeSection, setActiveSection] = useState<
     "subscriptions" | "groups"
   >("subscriptions");
+  const ethcontractaddress =
+    network === "eth"
+      ? SEPOLIA_CONTRACT_ADDRESS_SENDER
+      : network === "hedera"
+      ? HEDERA_CONTRACT_ADDRESS_SENDER
+      : FLARE_CONTRACT_ADDRESS_SENDER;
 
   const fetchSubscriptionDetails = async () => {
     if (!walletAddress) return;
@@ -85,6 +94,8 @@ const Dashboard = () => {
 
   const fetchSubscriptionDetailsEth = async () => {
     if (!account.address) return;
+    console.log("contract", ethcontractaddress);
+
     try {
       const result = await GETSUBSCRIPTION(ethcontractaddress);
       setSubscriptionDetails((result as any[]).slice(0, 2));
@@ -139,7 +150,7 @@ const Dashboard = () => {
       } else if (activeSection === "groups") {
         fetchGroupExpenses();
       }
-    } else if (network === "eth") {
+    } else if (network === "eth" || network === "flare") {
       if (activeSection === "subscriptions") {
         fetchSubscriptionDetailsEth();
       } else {
@@ -155,11 +166,17 @@ const Dashboard = () => {
       <main className="flex-grow">
         {/* Main Content */}
         <div className="flex-grow p-6">
-          {walletAddress ? (
+          {walletAddress || account?.address ? (
             <>
               <p className="font-playfair text-center mt-8 italic font-bold text-3xl mb-6">
-                Welcome Back {walletAddress.slice(0, 5)}...
-                {walletAddress.slice(-5)}
+                Welcome Back{" "}
+                {(() => {
+                  const address =
+                    network === "kinto" ? walletAddress : account?.address;
+                  return address
+                    ? `${address.slice(0, 5)}...${address.slice(-5)}`
+                    : "Guest";
+                })()}
               </p>
 
               <div className="flex items-center gap-4 mt-8 justify-center">
@@ -215,7 +232,6 @@ const Dashboard = () => {
                   </Link>
                 </div>
               </div>
-
               <div className="flex pl-16 items-center">
                 <button
                   onClick={() => setActiveSection("subscriptions")}

@@ -6,11 +6,16 @@ import { createKintoSDK } from "kinto-web-sdk";
 import { Link, useNavigate } from "react-router-dom";
 import { FaAngleLeft } from "react-icons/fa6";
 import { FaPlus, FaTimes } from "react-icons/fa";
+import { SEPOLIA_CONTRACT_ADDRESS_SENDER } from "../constants";
+import { CREATEGROUP } from "contracts/Integration";
+import { useSelector } from "react-redux";
 
 const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
 const contractAddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
+const ethcontractaddress = SEPOLIA_CONTRACT_ADDRESS_SENDER;
 
 function CreateGroup() {
+  const network = useSelector((state: any) => state?.network?.network);
   const router = useNavigate();
 
   async function creategroup({
@@ -37,6 +42,23 @@ function CreateGroup() {
       throw error;
     }
   }
+  
+  async function creategroupEth({
+      name,
+      members,
+    }: {
+      name: string;
+      members: string[];
+    }) {
+      try {
+        const response = await CREATEGROUP(ethcontractaddress, name, members);
+        console.log("Group created:", response);
+        router("/Dashboard");
+      } catch (error) {
+        console.error("Error creating group:", error);
+        throw error;
+      }
+    }
 
   const [response, setResponse] = useState("");
   const [fields, setFields] = useState({
@@ -68,6 +90,7 @@ function CreateGroup() {
       addMember();
     }
   };
+
   const handleCreateGroup = async () => {
     try {
       const args = {
@@ -76,8 +99,11 @@ function CreateGroup() {
       };
 
       console.log("Group Args:", args);
-
-      await creategroup(args);
+      if (network === 'kinto') {
+        await creategroup(args);
+      } else {
+        await creategroupEth(args);
+      }
       setResponse("Group created successfully!");
     } catch (error) {
       console.error("Error creating group:", error);
