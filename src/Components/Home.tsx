@@ -61,7 +61,9 @@ function Home() {
       </div>
 
       <div className="text-center font-dmsans mt-20">
-        <p className="text-2xl font-semibold">Why Choose FlexFuse?</p>
+        <p id="services" className="text-2xl font-semibold">
+          Why Choose FlexFuse?
+        </p>
         <p className="mt-3">
           Explore the powerful features that make FlexFuse the ultimate platform
           for <br /> decentralized expense and subscription management.
