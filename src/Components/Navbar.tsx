@@ -10,6 +10,8 @@ import {
 } from "viem";
 import contractsJSON from "../../public/abis/7887.json";
 import { MdVerified } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { setWalletAddress } from "../../store/store";
 
 interface KYCViewerInfo {
   isIndividual: boolean;
@@ -21,6 +23,8 @@ interface KYCViewerInfo {
 }
 
 function Navbar() {
+  const dispatch = useDispatch();
+
   const kintoSDK = createKintoSDK("0x14A1EC9b43c270a61cDD89B6CbdD985935D897fE");
   const [loading, setLoading] = useState(false);
   const kinto = defineChain({
@@ -112,6 +116,7 @@ function Navbar() {
 
   useEffect(() => {
     if (accountInfo?.walletAddress) {
+      dispatch(setWalletAddress(accountInfo.walletAddress));
       fetchKYCViewerInfo();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
