@@ -6,18 +6,31 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 contract FlexFuse is ReentrancyGuard {
     struct Subscription {
+        uint256 id;
+        string name;
+        string description;
         address serviceProvider;
-        uint256 amount;
+        uint256 baseAmount; 
         address token;
         uint256 startTime;
-        uint256 interval;
+        Frequency frequency;
         bool active;
     }
 
+    enum Frequency {
+        Monthly,
+        Quarterly,
+        HalfYearly,
+        Annually
+    }
+
     struct Group {
+        uint256 id;
+        string name;
         address[] members;
         mapping(address => uint256) payments;
         uint256 totalPayments;
+        mapping(address => Transaction[]) expenses; 
         bool active;
     }
 
@@ -29,18 +42,43 @@ contract FlexFuse is ReentrancyGuard {
         uint256 timestamp;
     }
 
-    mapping(bytes32 => Subscription) public subscriptions;
-    mapping(bytes32 => Group) public groups;
+
+    struct UserSubscription {
+        uint256 subscriptionId;
+        uint256 nextPaymentDue;
+        uint256 amount;
+    }
+    
+    uint256 private nextSubscriptionId = 1;
+    uint256 private nextGroupId = 1;
+
+
+    mapping(uint256 => Subscription) public subscriptions; 
+    mapping(address => UserSubscription[]) public userSubscriptions; 
+    mapping(uint256 => Group) public groups;
     mapping(address => Transaction[]) public transactionLogs;
 
     event SubscriptionCreated(
-        bytes32 indexed subscriptionId,
+        uint256 indexed subscriptionId,
+        string name,
+        string description,
         address indexed serviceProvider,
-        address token,
-        uint256 amount,
-        uint256 startTime,
-        uint256 interval
+        uint256 baseAmount,
+        address token
     );
+   event SubscriptionSelected(
+        address indexed user,
+        uint256 indexed subscriptionId,
+        uint256 amount,
+        uint256 nextPaymentDue
+    );
+
+
+    modifier subscriptionExists(uint256 subscriptionId) {
+        require(subscriptions[subscriptionId].serviceProvider != address(0), "Subscription does not exist");
+        _;
+    }
+
 
     event DirectPayment(
         address indexed sender,
@@ -56,14 +94,14 @@ contract FlexFuse is ReentrancyGuard {
         uint256 newInterval
     );
 
-    event PaymentAdded(bytes32 indexed groupId, address indexed member, uint256 amount);
-    event PaymentWithdrawn(bytes32 indexed groupId, address indexed member, uint256 amount);
-    event PaymentReleased(bytes32 indexed subscriptionId, uint256 amount, uint256 timestamp);
-    event MemberRemoved(bytes32 indexed groupId, address indexed member);
-    event GroupCreated(bytes32 indexed groupId, address[] members);
-    event GroupDeactivated(bytes32 indexed groupId);
+    event PaymentWithdrawn(uint256 indexed groupId, address indexed member, uint256 amount);
+    event MemberRemoved(uint256 indexed groupId, address indexed member);
+    event GroupCreated(uint256 indexed groupId, string name, address[] members);
+    event ExpenseAdded(uint256 indexed groupId, address indexed member, uint256 amount);
+    event PaymentReleased(uint256 indexed subscriptionId, uint256 amount, uint256 timestamp);
+    event GroupDeactivated(uint256 indexed groupId);
 
-    modifier onlyMember(bytes32 groupId) {
+    modifier onlyMember(uint256 groupId) {
         bool isMember = false;
         for (uint256 i = 0; i < groups[groupId].members.length; i++) {
             if (groups[groupId].members[i] == msg.sender) {
@@ -75,12 +113,7 @@ contract FlexFuse is ReentrancyGuard {
         _;
     }
 
-    modifier subscriptionExists(bytes32 subscriptionId) {
-        require(subscriptions[subscriptionId].serviceProvider != address(0), "Subscription does not exist");
-        _;
-    }
-
-    modifier groupExists(bytes32 groupId) {
+    modifier groupExists(uint256 groupId) {
         require(groups[groupId].active, "Group does not exist or is inactive");
         _;
     }
@@ -113,62 +146,170 @@ contract FlexFuse is ReentrancyGuard {
     }
 
     function createSubscription(
-        bytes32 subscriptionId,
-        address serviceProvider,
-        uint256 amount,
-        address token,
-        uint256 startTime,
-        uint256 interval
+        string calldata name,
+        string calldata description,
+        uint256 baseAmount, 
+        address token
     ) external nonReentrant {
-        require(subscriptions[subscriptionId].serviceProvider == address(0), "Subscription already exists");
-        subscriptions[subscriptionId] = Subscription({
-            serviceProvider: serviceProvider,
-            amount: amount,
+        subscriptions[nextSubscriptionId] = Subscription({
+            id: nextSubscriptionId,
+            name: name,
+            description: description,
+            serviceProvider: msg.sender,
+            baseAmount: baseAmount,
             token: token,
-            startTime: startTime,
-            interval: interval,
+            startTime: block.timestamp,
+            frequency: Frequency.Monthly,
             active: true
         });
 
-        emit SubscriptionCreated(subscriptionId, serviceProvider, token, amount, startTime, interval);
+        emit SubscriptionCreated(nextSubscriptionId, name, description, msg.sender, baseAmount, token);
+
+        nextSubscriptionId++;
     }
 
-    function updateSubscription(
-        bytes32 subscriptionId,
-        uint256 newAmount,
-        uint256 newInterval
+    function selectSubscription(
+        uint256 subscriptionId,
+        Frequency frequency
     ) external nonReentrant subscriptionExists(subscriptionId) {
         Subscription storage subscription = subscriptions[subscriptionId];
-        subscription.amount = newAmount;
-        subscription.interval = newInterval;
+        require(subscription.active, "Subscription is inactive");
 
-        emit SubscriptionUpdated(subscriptionId, newAmount, newInterval);
+        uint256 amount = calculateCost(subscription.baseAmount, frequency);
+        uint256 nextPaymentDue = block.timestamp + getInterval(frequency);
+
+        IERC20(subscription.token).transferFrom(msg.sender, subscription.serviceProvider, amount);
+
+        userSubscriptions[msg.sender].push(UserSubscription({
+            subscriptionId: subscriptionId,
+            nextPaymentDue: nextPaymentDue,
+            amount: amount
+        }));
+
+        emit SubscriptionSelected(msg.sender, subscriptionId, amount, nextPaymentDue);
     }
 
-    function createGroup(bytes32 groupId, address[] calldata members) external nonReentrant {
-        require(groups[groupId].members.length == 0, "Group already exists");
-        for (uint256 i = 0; i < members.length; i++) {
-            groups[groupId].members.push(members[i]);
+    function calculateCost(uint256 baseAmount, Frequency frequency) public pure returns (uint256) {
+        if (frequency == Frequency.Monthly) {
+            return baseAmount;
+        } else if (frequency == Frequency.Quarterly) {
+            return baseAmount * 3;
+        } else if (frequency == Frequency.HalfYearly) {
+            return baseAmount * 6;
+        } else if (frequency == Frequency.Annually) {
+            return baseAmount * 12;
         }
-        groups[groupId].active = true;
-
-        emit GroupCreated(groupId, members);
+        return 0;
     }
 
-    function addPayment(
-        bytes32 groupId,
-        uint256 amount,
-        address token
-    ) external nonReentrant groupExists(groupId) onlyMember(groupId) {
-        IERC20(token).transferFrom(msg.sender, address(this), amount);
-        groups[groupId].payments[msg.sender] += amount;
-        groups[groupId].totalPayments += amount;
+    function getInterval(Frequency frequency) public pure returns (uint256) {
+        if (frequency == Frequency.Monthly) {
+            return 30 days;
+        } else if (frequency == Frequency.Quarterly) {
+            return 90 days;
+        } else if (frequency == Frequency.HalfYearly) {
+            return 180 days;
+        } else if (frequency == Frequency.Annually) {
+            return 365 days;
+        }
+        return 0;
+    }
 
-        emit PaymentAdded(groupId, msg.sender, amount);
+    function getAllSubscriptions() external view returns (Subscription[] memory) {
+        Subscription[] memory allSubscriptions = new Subscription[](nextSubscriptionId - 1);
+        for (uint256 i = 1; i < nextSubscriptionId; i++) {
+            allSubscriptions[i - 1] = subscriptions[i];
+        }
+        return allSubscriptions;
+    }
+
+    function getUserSubscriptions(address user) external view returns (UserSubscription[] memory) {
+        return userSubscriptions[user];
+    }
+
+    function getSubscriptionDetails(uint256 subscriptionId)
+        external
+        view
+        subscriptionExists(subscriptionId)
+        returns (
+            string memory name,
+            string memory description,
+            address serviceProvider,
+            uint256 baseAmount,
+            address token,
+            bool active
+        )
+    {
+        Subscription storage subscription = subscriptions[subscriptionId];
+        return (
+            subscription.name,
+            subscription.description,
+            subscription.serviceProvider,
+            subscription.baseAmount,
+            subscription.token,
+            subscription.active
+        );
+    }
+
+
+    function createGroup(string calldata name, address[] calldata members) external nonReentrant {
+        require(members.length > 0, "Group must have at least one member");
+
+        Group storage group = groups[nextGroupId];
+        group.id = nextGroupId;
+        group.name = name;
+        group.members = members;
+        group.active = true;
+
+        emit GroupCreated(nextGroupId, name, members);
+        nextGroupId++;
+    }
+
+
+    function addExpense(uint256 groupId, uint256 amount, address token) external nonReentrant groupExists(groupId) onlyMember(groupId) {
+        Group storage group = groups[groupId];
+        require(amount > 0, "Amount must be greater than zero");
+
+        IERC20(token).transferFrom(msg.sender, address(this), amount);
+        group.payments[msg.sender] += amount;
+        group.totalPayments += amount;
+
+        group.expenses[msg.sender].push(Transaction({
+            sender: msg.sender,
+            receiver: address(this),
+            amount: amount,
+            token: token,
+            timestamp: block.timestamp
+        }));
+
+        emit ExpenseAdded(groupId, msg.sender, amount);
+    }
+
+    function getUserExpenses(uint256 groupId, address user) external view groupExists(groupId) returns (Transaction[] memory) {
+        return groups[groupId].expenses[user];
+    }
+
+    function getAllGroups() external view returns (uint256[] memory, string[] memory, uint256[] memory, bool[] memory) {
+        uint256 count = nextGroupId - 1;
+
+        uint256[] memory ids = new uint256[](count);
+        string[] memory names = new string[](count);
+        uint256[] memory totalPayments = new uint256[](count);
+        bool[] memory activeStatuses = new bool[](count);
+
+        for (uint256 i = 1; i <= count; i++) {
+            Group storage group = groups[i];
+            ids[i - 1] = group.id;
+            names[i - 1] = group.name;
+            totalPayments[i - 1] = group.totalPayments;
+            activeStatuses[i - 1] = group.active;
+        }
+
+        return (ids, names, totalPayments, activeStatuses);
     }
 
     function withdrawPayment(
-        bytes32 groupId,
+        uint256 groupId,
         uint256 amount,
         address token
     ) external nonReentrant groupExists(groupId) onlyMember(groupId) {
@@ -182,7 +323,7 @@ contract FlexFuse is ReentrancyGuard {
         emit PaymentWithdrawn(groupId, msg.sender, amount);
     }
 
-    function removeMember(bytes32 groupId, address member) external nonReentrant groupExists(groupId) {
+    function removeMember(uint256 groupId, address member) external nonReentrant groupExists(groupId) {
         Group storage group = groups[groupId];
         bool removed = false;
 
@@ -200,73 +341,63 @@ contract FlexFuse is ReentrancyGuard {
         group.totalPayments -= memberBalance;
 
         if (memberBalance > 0) {
-            IERC20(group.members[0]).transfer(member, memberBalance); // Assuming token[0] for refunds.
+            IERC20(group.members[0]).transfer(member, memberBalance); 
         }
 
         emit MemberRemoved(groupId, member);
     }
 
-    function deactivateGroup(bytes32 groupId) external nonReentrant groupExists(groupId) {
+    function deactivateGroup(uint256 groupId) external nonReentrant groupExists(groupId) {
         groups[groupId].active = false;
 
         emit GroupDeactivated(groupId);
     }
 
-    function releasePayment(bytes32 subscriptionId, bytes32 groupId) external nonReentrant {
+    function releasePayment(uint256 subscriptionId, uint256 groupId) external nonReentrant {
         Subscription storage subscription = subscriptions[subscriptionId];
         require(subscription.active, "Subscription is not active");
+
+        uint256 interval = getInterval(subscription.frequency);
         require(
             block.timestamp >= subscription.startTime &&
-                (block.timestamp - subscription.startTime) % subscription.interval == 0,
+                (block.timestamp - subscription.startTime) % interval == 0,
             "Not time for payment"
         );
 
         Group storage group = groups[groupId];
-        require(group.totalPayments >= subscription.amount, "Insufficient funds in group");
+        require(group.totalPayments >= subscription.baseAmount, "Insufficient funds in group");
 
-        IERC20(subscription.token).transfer(subscription.serviceProvider, subscription.amount);
-        group.totalPayments -= subscription.amount;
+        IERC20(subscription.token).transfer(subscription.serviceProvider, subscription.baseAmount);
+        group.totalPayments -= subscription.baseAmount;
 
-        emit PaymentReleased(subscriptionId, subscription.amount, block.timestamp);
+        emit PaymentReleased(subscriptionId, subscription.baseAmount, block.timestamp);
     }
 
-    function checkSubscriptionDue(bytes32 subscriptionId) external view subscriptionExists(subscriptionId) returns (bool) {
+
+
+    function checkSubscriptionDue(uint256 subscriptionId) external view subscriptionExists(subscriptionId) returns (bool) {
         Subscription storage subscription = subscriptions[subscriptionId];
+        uint256 interval = getInterval(subscription.frequency);
         return (block.timestamp >= subscription.startTime &&
-            (block.timestamp - subscription.startTime) % subscription.interval == 0);
+            (block.timestamp - subscription.startTime) % interval == 0);
     }
 
-    function getGroupMembers(bytes32 groupId) external view groupExists(groupId) returns (address[] memory) {
+
+    function getGroupMembers(uint256 groupId) external view groupExists(groupId) returns (address[] memory) {
         return groups[groupId].members;
     }
 
-    function getGroupPayments(bytes32 groupId, address member) external view groupExists(groupId) returns (uint256) {
+    function getGroupPayments(uint256 groupId, address member) external view groupExists(groupId) returns (uint256) {
         return groups[groupId].payments[member];
     }
 
-    function getGroupDetails(bytes32 groupId) 
-        external 
-        view 
-        groupExists(groupId) 
-        returns (address[] memory members, uint256 totalPayments) 
+    function getGroupDetails(uint256 groupId)
+        external
+        view
+        groupExists(groupId)
+        returns (uint256 id, string memory name, address[] memory members, uint256 totalPayments, bool active)
     {
-        return (groups[groupId].members, groups[groupId].totalPayments);
-    }
-
-    function getSubscriptionDetails(bytes32 subscriptionId) 
-        external 
-        view 
-        subscriptionExists(subscriptionId) 
-        returns (
-            address serviceProvider,
-            uint256 amount,
-            address token,
-            uint256 startTime,
-            uint256 interval,
-            bool active
-        ) 
-    {
-        Subscription storage sub = subscriptions[subscriptionId];
-        return (sub.serviceProvider, sub.amount, sub.token, sub.startTime, sub.interval, sub.active);
+        Group storage group = groups[groupId];
+        return (group.id, group.name, group.members, group.totalPayments, group.active);
     }
 }

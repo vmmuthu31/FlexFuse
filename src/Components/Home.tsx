@@ -3,6 +3,7 @@ import { FaArrowRight } from "react-icons/fa6";
 import bgaura from "./bgaura.svg";
 import footer from "./footer.svg";
 import Footer from "./Footer";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -38,10 +39,12 @@ function Home() {
               infrastructure.
             </p>
             <div className="flex gap-5 justify-center">
-              <p className="bg-black px-4 py-2 rounded-lg flex gap-2 items-center text-white">
-                Get Started
-                <FaArrowRight />
-              </p>
+              <Link to="/Dashboard">
+                <p className="bg-black px-4 py-2 rounded-lg flex gap-2 items-center text-white">
+                  Get Started
+                  <FaArrowRight />
+                </p>
+              </Link>
               <p className="border-black border text-black px-4 py-2 rounded-lg ">
                 Learn More
               </p>
@@ -263,17 +266,19 @@ function Home() {
           Unlock the full potential of multi-chain transactions <br /> with
           FlexFuse seamless expense and subscription <br /> management.
         </p>
-        <p
-          className="bg-white px-4 py-2 mt-6 rounded-lg flex gap-2 items-center text-black"
-          style={{
-            cursor: "pointer",
-            display: "inline-flex",
-            margin: "10px 0",
-          }}
-        >
-          Get Started
-          <FaArrowRight />
-        </p>
+        <Link to="/Dashboard">
+          <p
+            className="bg-white px-4 py-2 mt-6 rounded-lg flex gap-2 items-center text-black"
+            style={{
+              cursor: "pointer",
+              display: "inline-flex",
+              margin: "10px 0",
+            }}
+          >
+            Get Started
+            <FaArrowRight />
+          </p>
+        </Link>
       </div>
       <div className="flex font-albertsans mb-5 justify-between px-14">
         <div>

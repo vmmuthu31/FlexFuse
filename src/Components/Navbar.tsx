@@ -12,6 +12,7 @@ import contractsJSON from "../../public/abis/7887.json";
 import { MdVerified } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { setWalletAddress } from "../../store/store";
+import { Link } from "react-router-dom";
 
 interface KYCViewerInfo {
   isIndividual: boolean;
@@ -132,10 +133,10 @@ function Navbar() {
 
   return (
     <div className="flex justify-between py-4 pt-8 px-32 font-albertsans ">
-      <div className="flex gap-3 items-center">
+      <Link className="flex gap-3 items-center" to="/">
         <img src="/logo.svg" alt="KintoHub Logo" />
         <span className=" font-semibold text-2xl">FlexFuse</span>
-      </div>
+      </Link>
       <div className="flex gap-8 items-center">
         <span>Home</span>
         <span>Services</span>

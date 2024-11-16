@@ -12,9 +12,9 @@ import {
 import FlexfuseAbi from "../../public/abis/flexfuse.json";
 import { createKintoSDK } from "kinto-web-sdk";
 
-const kintoSDK = createKintoSDK("0x91ac20b5B32B070186f924dD13719E37d576B3A1");
+const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
 
-const contractadddress = "0x91ac20b5B32B070186f924dD13719E37d576B3A1";
+const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
 
 function Homenetwork() {
   const kinto = defineChain({
@@ -37,7 +37,7 @@ function Homenetwork() {
     },
   });
 
-  async function fetchSubscriptionDetails(subscriptionId: string) {
+  async function fetchSubscriptionDetails() {
     const client = createPublicClient({
       chain: kinto,
       transport: http(),
@@ -50,9 +50,7 @@ function Homenetwork() {
     });
 
     try {
-      const details = await contract.read.getSubscriptionDetails([
-        subscriptionId,
-      ]);
+      const details = await contract.read.getAllSubscriptions();
       console.log("Subscription Details:", details);
       return details;
     } catch (error) {
@@ -60,34 +58,21 @@ function Homenetwork() {
     }
   }
 
-  interface CreateSubscriptionArgs {
-    subscriptionId: string;
-    serviceProvider: string;
-    amount: number;
-    token: string;
-    startTime: number;
-    interval: number;
-  }
-
   async function createSubscription({
-    subscriptionId,
-    serviceProvider,
-    amount,
+    name,
+    description,
+    baseAmount,
     token,
-    startTime,
-    interval,
-  }: CreateSubscriptionArgs): Promise<void> {
+  }: {
+    name: string;
+    description: string;
+    baseAmount: number;
+    token: string;
+  }): Promise<void> {
     const data = encodeFunctionData({
       abi: FlexfuseAbi,
       functionName: "createSubscription",
-      args: [
-        subscriptionId,
-        serviceProvider,
-        amount,
-        token,
-        startTime,
-        interval,
-      ],
+      args: [name, description, baseAmount, token],
     });
 
     try {
@@ -97,6 +82,7 @@ function Homenetwork() {
       console.log("Subscription created:", response);
     } catch (error) {
       console.error("Error creating subscription:", error);
+      throw error;
     }
   }
 
@@ -106,14 +92,7 @@ function Homenetwork() {
 
   const handleFetchSubscriptionDetails = async () => {
     try {
-      if (input.length > 31) {
-        throw new Error("Input must be 31 characters or less for bytes32.");
-      }
-
-      const subscriptionId = ethers.utils.formatBytes32String(input);
-      console.log("Subscription ID (bytes32):", subscriptionId);
-
-      const details = await fetchSubscriptionDetails(subscriptionId);
+      const details = await fetchSubscriptionDetails();
       setResponse(JSON.stringify(details, null, 2));
     } catch (error) {
       console.error("Error handling fetch subscription details:", error);
@@ -123,17 +102,14 @@ function Homenetwork() {
 
   const handleCreateSubscription = async () => {
     try {
-      const subscriptionId = ethers.utils.formatBytes32String(input);
-      console.log("Subscription ID (bytes32):", subscriptionId);
-
       const args = {
-        subscriptionId,
-        serviceProvider: "0x5b17c05bf59D82266e29C0Ca86aa1359F9cE801A",
-        amount: 100,
-        token: "0x2367C8395a283f0285c6E312D5aA15826f1fEA25",
-        startTime: Math.floor(Date.now() / 1000),
-        interval: 3600,
+        name: "DeFi Analytics Pro",
+        description:
+          "Get real-time analytics for your DeFi investments across chains",
+        baseAmount: 1,
+        token: "0x010700808D59d2bb92257fCafACfe8e5bFF7aB87",
       };
+
       console.log("Subscription Args:", args);
 
       await createSubscription(args);

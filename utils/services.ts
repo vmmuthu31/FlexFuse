@@ -9,9 +9,9 @@ import {
 import FlexfuseAbi from "../public/abis/flexfuse.json";
 import { createKintoSDK } from "kinto-web-sdk";
 
-const kintoSDK = createKintoSDK("0x14A1EC9b43c270a61cDD89B6CbdD985935D897fE");
+const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
 
-const contractadddress = "0x14A1EC9b43c270a61cDD89B6CbdD985935D897fE";
+const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
 export const kinto = defineChain({
   id: 7887,
   name: "Kinto",

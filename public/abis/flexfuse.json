@@ -41,9 +41,40 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "member",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "ExpenseAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "groupId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
       },
       {
         "indexed": false,
@@ -60,9 +91,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
       }
     ],
     "name": "GroupDeactivated",
@@ -73,9 +104,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -92,34 +123,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "bytes32",
-        "name": "groupId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "member",
-        "type": "address"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "PaymentAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bytes32",
         "name": "subscriptionId",
-        "type": "bytes32"
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -142,9 +148,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -167,9 +173,21 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "subscriptionId",
-        "type": "bytes32"
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
       },
       {
         "indexed": true,
@@ -179,9 +197,34 @@
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "baseAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "token",
         "type": "address"
+      }
+    ],
+    "name": "SubscriptionCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "subscriptionId",
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -192,17 +235,11 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "interval",
+        "name": "nextPaymentDue",
         "type": "uint256"
       }
     ],
-    "name": "SubscriptionCreated",
+    "name": "SubscriptionSelected",
     "type": "event"
   },
   {
@@ -233,9 +270,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
       },
       {
         "internalType": "uint256",
@@ -248,7 +285,7 @@
         "type": "address"
       }
     ],
-    "name": "addPayment",
+    "name": "addExpense",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -256,9 +293,33 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
+        "name": "baseAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum FlexFuse.Frequency",
+        "name": "frequency",
+        "type": "uint8"
+      }
+    ],
+    "name": "calculateCost",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "subscriptionId",
-        "type": "bytes32"
+        "type": "uint256"
       }
     ],
     "name": "checkSubscriptionDue",
@@ -275,9 +336,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "groupId",
-        "type": "bytes32"
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
       },
       {
         "internalType": "address[]",
@@ -293,34 +354,24 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "subscriptionId",
-        "type": "bytes32"
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
       },
       {
-        "internalType": "address",
-        "name": "serviceProvider",
-        "type": "address"
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
       },
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "baseAmount",
         "type": "uint256"
       },
       {
         "internalType": "address",
         "name": "token",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "interval",
-        "type": "uint256"
       }
     ],
     "name": "createSubscription",
@@ -331,9 +382,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
       }
     ],
     "name": "deactivateGroup",
@@ -342,15 +393,113 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getAllGroups",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "bool[]",
+        "name": "",
+        "type": "bool[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllSubscriptions",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "serviceProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum FlexFuse.Frequency",
+            "name": "frequency",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bool",
+            "name": "active",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct FlexFuse.Subscription[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
       }
     ],
     "name": "getGroupDetails",
     "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
       {
         "internalType": "address[]",
         "name": "members",
@@ -360,6 +509,11 @@
         "internalType": "uint256",
         "name": "totalPayments",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "active",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -368,9 +522,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
       }
     ],
     "name": "getGroupMembers",
@@ -387,9 +541,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
       },
       {
         "internalType": "address",
@@ -411,13 +565,42 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "enum FlexFuse.Frequency",
+        "name": "frequency",
+        "type": "uint8"
+      }
+    ],
+    "name": "getInterval",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "subscriptionId",
-        "type": "bytes32"
+        "type": "uint256"
       }
     ],
     "name": "getSubscriptionDetails",
     "outputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
       {
         "internalType": "address",
         "name": "serviceProvider",
@@ -425,23 +608,13 @@
       },
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "baseAmount",
         "type": "uint256"
       },
       {
         "internalType": "address",
         "name": "token",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "interval",
-        "type": "uint256"
       },
       {
         "internalType": "bool",
@@ -501,13 +674,110 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
+        "name": "groupId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserExpenses",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "receiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct FlexFuse.Transaction[]",
         "name": "",
-        "type": "bytes32"
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserSubscriptions",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "subscriptionId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nextPaymentDue",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct FlexFuse.UserSubscription[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "name": "groups",
     "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
       {
         "internalType": "uint256",
         "name": "totalPayments",
@@ -525,14 +795,14 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "subscriptionId",
-        "type": "bytes32"
+        "type": "uint256"
       },
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
       }
     ],
     "name": "releasePayment",
@@ -543,9 +813,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
       },
       {
         "internalType": "address",
@@ -554,6 +824,24 @@
       }
     ],
     "name": "removeMember",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "subscriptionId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum FlexFuse.Frequency",
+        "name": "frequency",
+        "type": "uint8"
+      }
+    ],
+    "name": "selectSubscription",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -584,13 +872,28 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "",
-        "type": "bytes32"
+        "type": "uint256"
       }
     ],
     "name": "subscriptions",
     "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
       {
         "internalType": "address",
         "name": "serviceProvider",
@@ -598,7 +901,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "baseAmount",
         "type": "uint256"
       },
       {
@@ -612,9 +915,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "interval",
-        "type": "uint256"
+        "internalType": "enum FlexFuse.Frequency",
+        "name": "frequency",
+        "type": "uint8"
       },
       {
         "internalType": "bool",
@@ -672,32 +975,43 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "subscriptionId",
-        "type": "bytes32"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "newAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "newInterval",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "updateSubscription",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "userSubscriptions",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "subscriptionId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "nextPaymentDue",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
         "name": "groupId",
-        "type": "bytes32"
+        "type": "uint256"
       },
       {
         "internalType": "uint256",
