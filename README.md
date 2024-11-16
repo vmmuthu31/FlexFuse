@@ -1,8 +1,6 @@
-# FlexFuse
+# FlexFuse - Decentralized Expense Management and Multi-Chain Subscription Service
 
 ![Slide 16_9 - 11](https://github.com/user-attachments/assets/f60b1168-0640-48b3-aa33-eb770bb6effa)
-
-**Decentralized Expense Management and Multi-Chain Subscription Service**
 
 ## Table of Contents
 
