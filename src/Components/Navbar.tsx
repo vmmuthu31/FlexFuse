@@ -126,7 +126,7 @@ function Navbar() {
   }
 
   return (
-    <div className="flex justify-between py-4 px-20 font-albertsans ">
+    <div className="flex justify-between py-4 pt-8 px-32 font-albertsans ">
       <div className="flex gap-3 items-center">
         <img src="/logo.svg" alt="KintoHub Logo" />
         <span className=" font-semibold text-2xl">FlexFuse</span>
@@ -135,7 +135,6 @@ function Navbar() {
         <span>Home</span>
         <span>Services</span>
         <span>About Us</span>
-        <span>Contact</span>
         <div>
           {accountInfo?.walletAddress && (
             <div className="flex gap-1 justify-between">

@@ -2,8 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  background-color: #e8e8e8;
+}
+
 .font-albertsans {
   font-family: "Albert Sans", sans-serif;
+  font-optical-sizing: auto;
+}
+.font-dmsans {
+  font-family: "DM Sans", serif;
+  font-optical-sizing: auto;
+}
+
+.font-playfair {
+  font-family: "Playfair Display", serif;
   font-optical-sizing: auto;
 }
 
