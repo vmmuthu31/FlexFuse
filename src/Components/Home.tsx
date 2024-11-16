@@ -2,8 +2,7 @@ import Navbar from "./Navbar";
 import { FaArrowRight } from "react-icons/fa6";
 import bgaura from "./bgaura.svg";
 import footer from "./footer.svg";
-import { FaTwitter } from "react-icons/fa";
-import { FaLinkedinIn } from "react-icons/fa";
+import Footer from "./Footer";
 
 function Home() {
   return (
@@ -295,13 +294,7 @@ function Home() {
           <p className=" underline">Contact</p>
         </div>
       </div>
-      <div className="flex justify-between bg-[#262626] text-white py-3 mx-14 px-7 rounded-lg items-center mb-10">
-        <div className="flex gap-3">
-          <FaTwitter className="text-black text-2xl bg-white p-1 rounded-lg" />
-          <FaLinkedinIn className="text-black text-2xl bg-white p-1 rounded-lg" />
-        </div>
-        <p>© 2024 FlexFuse. All Rights Reserved.</p>
-      </div>
+      <Footer />
     </div>
   );
 }
