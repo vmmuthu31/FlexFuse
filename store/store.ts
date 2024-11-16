@@ -16,7 +16,24 @@ const walletSlice = createSlice({
   },
 });
 
+// network slice
+
+const networkSlice = createSlice({
+  name: "network",
+  initialState: { network: "kinto" },
+  reducers: {
+    setNetwork: (state, action) => {
+      state.network = action.payload;
+    },
+    clearNetwork: (state) => {
+      state.network = "";
+    },
+  },
+});
+
 export const { setWalletAddress, clearWalletAddress } = walletSlice.actions;
+
+export const { setNetwork, clearNetwork } = networkSlice.actions;
 
 const persistConfig = {
   key: "root",
@@ -25,6 +42,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   wallet: walletSlice.reducer,
+  network: networkSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
