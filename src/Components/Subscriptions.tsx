@@ -13,13 +13,18 @@ import {
 import FlexfuseAbi from "../../public/abis/flexfuse.json";
 import { Link } from "react-router-dom";
 import { ethers } from "ethers";
+import { useSelector } from "react-redux";
+import { SEPOLIA_CONTRACT_ADDRESS_SENDER } from "../constants";
+import { GETSUBSCRIPTION } from "contracts/Integration";
 
 const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
+const ethcontractaddress = SEPOLIA_CONTRACT_ADDRESS_SENDER;
 
 function Subscriptions() {
   const [subscriptionDetails, setSubscriptionDetails] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const network = useSelector((state: any) => state?.network?.network);
   const itemsPerPage = 4;
 
   const kinto = defineChain({
@@ -62,10 +67,24 @@ function Subscriptions() {
     }
   }
 
+  const fetchSubscriptionDetailsEth = async () => {
+    try {
+      const result = await GETSUBSCRIPTION(ethcontractaddress);
+      setSubscriptionDetails((result as any[]).reverse());
+      console.log("result", result);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
   useEffect(() => {
-    fetchSubscriptionDetails();
+    if(network === "kinto") {
+      fetchSubscriptionDetails();
+    } else {
+      fetchSubscriptionDetailsEth();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [network]);
 
   const filteredSubscriptions = subscriptionDetails.filter(
     (subscription) =>
@@ -124,6 +143,17 @@ function Subscriptions() {
                         {subscription.description}
                       </p>
                       <p>
+                        {network === "eth" &&
+                        
+                        <div className="flex gap-1 items-center">
+                          <p>
+                            {BigInt(subscription.baseAmount).toString()}
+                            USDC/Month
+                          </p>
+                          <img src="/coins.svg" alt="Coins" />
+                        </div>
+                        }
+                        {network === 'kinto' && 
                         <div className="flex gap-1 items-center">
                           <p>
                             {ethers.utils.formatEther(subscription.baseAmount)}{" "}
@@ -131,6 +161,7 @@ function Subscriptions() {
                           </p>
                           <img src="/coins.svg" alt="Coins" />
                         </div>
+                        }
                       </p>
                       <Link
                         to={`/Subscriptions/Subscription?id=${subscription.id}`}

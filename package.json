@@ -8,7 +8,9 @@
     "@mui/material": "^5.16.7",
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@rainbow-me/rainbowkit": "^2.2.0",
     "@reduxjs/toolkit": "^2.3.0",
+    "@tanstack/react-query": "^5.60.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -41,8 +43,10 @@
     "styled-components": "^6.1.12",
     "terser-webpack-plugin": "^5.3.10",
     "typescript": "^5.5.4",
-    "viem": "^2.19.3",
-    "web-vitals": "^2.1.4"
+    "viem": "^2.21.45",
+    "wagmi": "^2.12.33",
+    "web-vitals": "^2.1.4",
+    "web3": "^4.15.0"
   },
   "resolutions": {
     "styled-components": "^5",

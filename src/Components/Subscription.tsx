@@ -16,14 +16,18 @@ import { useSearchParams } from "react-router-dom";
 import { FaAngleLeft } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { createKintoSDK } from "kinto-web-sdk";
+import { useSelector } from "react-redux";
+import { GETSUBSCRIPTIONID, SUBSCRIBE } from "contracts/Integration";
+import { SEPOLIA_CONTRACT_ADDRESS_SENDER } from "../constants";
 
 const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
 
 const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
-
+const ethcontractaddress = SEPOLIA_CONTRACT_ADDRESS_SENDER;
 const Subscription = () => {
   const [subscriptionDetails, setSubscriptionDetails] = useState<any>();
   const [subscribesuccess, setSubscribeSuccess] = useState(false);
+  const network = useSelector((state: any) => state?.network?.network);
 
   const [searchParams] = useSearchParams();
 
@@ -64,6 +68,8 @@ const Subscription = () => {
     try {
       const details = await contract.read.getSubscriptionDetails([id]);
       setSubscriptionDetails(details);
+      console.log("result of kinto", details);
+      
     } catch (error) {
       console.error("Error fetching subscription details:", error);
     }
@@ -88,11 +94,39 @@ const Subscription = () => {
       throw error;
     }
   }
+  
+  const fetchSubscriptionIdDetailEth = async () => {
+    try {
+      const id = searchParams.get("id");
+      const result = await GETSUBSCRIPTIONID(ethcontractaddress, id);
+      setSubscriptionDetails(result);
+      console.log("result sub id", result);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
+  const createSubscriptionEth = async () => {
+    try {
+      const id = searchParams.get("id");
+      const result = await SUBSCRIBE(ethcontractaddress, id);
+      console.log("Subscription created:", result);
+      toast.success("Subscription Activated Successfully");
+      setSubscribeSuccess(true);
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+      throw error;
+    }
+  }
 
   useEffect(() => {
-    fetchSubscriptionDetails();
+    if (network === 'kinto') {
+      fetchSubscriptionDetails();
+    } else {
+      fetchSubscriptionIdDetailEth();
+    }
     // eslint-disable-next-line
-  }, []);
+  }, [network]);
 
   return (
     <div className="bg-[#E8E8E8] flex flex-col justify-between min-h-screen">
@@ -117,38 +151,77 @@ const Subscription = () => {
           <div></div>
         </div>
 
-        <div className="mt-10">
-          {subscriptionDetails && (
-            <div className="flex pl-20 text-left ">
-              <div>
-                <h3 className="font-bold text-3xl text-[#262626]">
-                  {subscriptionDetails[0]}
-                </h3>
-                <p className="text-gray-600">{subscriptionDetails[1]}</p>
+        {network === 'kinto' &&
+          <div className="mt-10">
+            {subscriptionDetails && (
+              <div className="flex pl-20 text-left ">
+                <div>
+                  <h3 className="font-bold text-3xl text-[#262626]">
+                    {subscriptionDetails[0]}
+                  </h3>
+                  <p className="text-gray-600">{subscriptionDetails[1]}</p>
 
-                <p className="text-2xl pt-3 font-albertsans font-medium text-[#262626]">
-                  {ethers.utils.formatEther(subscriptionDetails[3])} Kinto/Month
-                </p>
-                <p className="text-gray-600">
-                  Monthly, Annual, or One-Time Payment.
-                </p>
-                <div className="w-32 text-center pt-3">
-                  <p className="bg-[#9CE6BA] border-[#005F26] p-1 text-sm rounded-full border-[1px]">
-                    • 7-day free trial
+                  <p className="text-2xl pt-3 font-albertsans font-medium text-[#262626]">
+                    {ethers.utils.formatEther(subscriptionDetails[3])} Kinto/Month
                   </p>
+                  <p className="text-gray-600">
+                    Monthly, Annual, or One-Time Payment.
+                  </p>
+                  <div className="w-32 text-center pt-3">
+                    <p className="bg-[#9CE6BA] border-[#005F26] p-1 text-sm rounded-full border-[1px]">
+                      • 7-day free trial
+                    </p>
+                  </div>
+                  <img src="/coins.svg" alt="Subscription" className="mt-5" />
+                  <button
+                    onClick={createSubscription}
+                    disabled={subscribesuccess}
+                    className="px-7 py-3 bg-black text-white rounded-lg mt-5"
+                  >
+                    {subscribesuccess ? "Subscribed" : "Subscribe"}
+                  </button>
                 </div>
-                <img src="/coins.svg" alt="Subscription" className="mt-5" />
-                <button
-                  onClick={createSubscription}
-                  disabled={subscribesuccess}
-                  className="px-7 py-3 bg-black text-white rounded-lg mt-5"
-                >
-                  {subscribesuccess ? "Subscribed" : "Subscribe"}
-                </button>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        }
+
+        {network === 'eth' && 
+          <div className="mt-10">
+            {subscriptionDetails && (
+              <div className="flex pl-20 text-left ">
+                <div>
+                  <h3 className="font-bold text-3xl text-[#262626]">
+                    {subscriptionDetails[0]}
+                  </h3>
+                  <p className="text-gray-600">{subscriptionDetails[1]}</p>
+
+                  <p className="text-2xl pt-3 font-albertsans font-medium text-[#262626]">
+                    {BigInt(subscriptionDetails[3]).toString()} USDC/Month
+                  </p>
+                  <p className="text-gray-600">
+                    Monthly, Annual, or One-Time Payment.
+                  </p>
+                  <div className="w-32 text-center pt-3">
+                    <p className="bg-[#9CE6BA] border-[#005F26] p-1 text-sm rounded-full border-[1px]">
+                      • 7-day free trial
+                    </p>
+                  </div>
+                  <img src="/coins.svg" alt="Subscription" className="mt-5" />
+                  <button
+                    onClick={createSubscriptionEth}
+                    disabled={subscribesuccess}
+                    className="px-7 py-3 bg-black text-white rounded-lg mt-5"
+                  >
+                    {subscribesuccess ? "Subscribed" : "Subscribe"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        }
+
+
       </main>
       <Footer />
     </div>

@@ -10,9 +10,12 @@ import {
   http,
 } from "viem";
 import FlexfuseAbi from "../../public/abis/flexfuse.json";
+import { SEPOLIA_CONTRACT_ADDRESS_SENDER } from "../constants";
+import { GETSUBSCRIPTIONBYADDRESS } from "contracts/Integration";
+import { useAccount } from "wagmi";
 
 const CONTRACT_ADDRESS = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
-
+const ethcontractaddress = SEPOLIA_CONTRACT_ADDRESS_SENDER;
 const KINTO_CHAIN = defineChain({
   id: 7887,
   name: "Kinto",
@@ -38,6 +41,8 @@ const Dashboard = () => {
   const walletAddress = useSelector((state: any) => state?.wallet?.address);
   const [subscriptionDetails, setSubscriptionDetails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const network = useSelector((state: any) => state?.network?.network);
+  const account = useAccount();
 
   const fetchSubscriptionDetails = async () => {
     if (!walletAddress) return;
@@ -68,9 +73,22 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
-    fetchSubscriptionDetails();
+  const fetchSubscriptionDetailsEth = async () => {
+    try {
+      const result = await GETSUBSCRIPTIONBYADDRESS(ethcontractaddress, account?.address);
+      setSubscriptionDetails(result as any[]);
+      console.log("result", result);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
 
+  useEffect(() => {
+    if(network === 'kinto') {
+      fetchSubscriptionDetails();
+    } else {
+      fetchSubscriptionDetailsEth();
+    }
     // eslint-disable-next-line
   }, []);
 
@@ -87,7 +105,7 @@ const Dashboard = () => {
               </p>
               {loading ? (
                 <p className="mt-5">Loading your subscriptions...</p>
-              ) : subscriptionDetails.length > 0 ? (
+              ) : subscriptionDetails?.length > 0 ? (
                 <ul className="mt-5">
                   {subscriptionDetails.map((subscription, index) => (
                     <li key={index} className="py-2 border-b">

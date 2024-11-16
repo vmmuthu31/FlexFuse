@@ -1,9 +1,10 @@
 // import SenderAbi from "./abi/SenderAbi.json";
-import SenderAbi from "./abi/SenderNoOwner.json";
+import SenderAbi from "./abi/SenderAbi.json";
 import StakerAbi from "./abi/StakerAbi.json";
+import tokenabi from "./abi/token.json";
 import { ethers } from "ethers";
 import Web3 from "web3";
-import { ARBITRUM_SENDER_CONTRACT_ADDRESS, ARBITRUM_USDC_CONTRACT_ADDRESS, BASE_STAKER_CONTRACT_ADDRESS } from "../constants";
+import { ARBITRUM_SENDER_CONTRACT_ADDRESS, BASE_STAKER_CONTRACT_ADDRESS } from "../constants";
 
 const isBrowser = () => typeof window !== "undefined";
 const { ethereum } = isBrowser();
@@ -30,6 +31,108 @@ export const SENDUSDC = async (account, amount, platformAddress) => {
         return answer;
     } catch (error) {
         console.error('Error sending USDC:', error);
+    }
+}
+
+export const GETSUBSCRIPTION = async (contractAddress) => {
+    try {
+        const provider = 
+        window.ethereum != null
+        ? new ethers.providers.Web3Provider(window.ethereum)
+        : ethers.providers.getDefaultProvider();
+            
+        const signer = provider.getSigner();
+        const Role = new ethers.Contract(contractAddress, SenderAbi, signer);
+        const answer = await Role.getAllSubscriptions();
+        return answer;
+    } catch (error) {
+        console.error('Error sending USDC:', error);
+    }
+}
+
+export const GETSUBSCRIPTIONID = async (contractAddress, id) => {
+    try {
+        const provider = 
+        window.ethereum != null
+        ? new ethers.providers.Web3Provider(window.ethereum)
+        : ethers.providers.getDefaultProvider();
+            
+        const signer = provider.getSigner();
+        const Role = new ethers.Contract(contractAddress, SenderAbi, signer);
+        const answer = await Role.getSubscriptionDetails(id);
+        return answer;
+    } catch (error) {
+        console.error('Error getting subscription id detail:', error);
+    }
+}
+
+export const SUBSCRIBE = async (contractAddress, id) => {
+    try {
+        const provider = 
+        window.ethereum != null
+        ? new ethers.providers.Web3Provider(window.ethereum)
+        : ethers.providers.getDefaultProvider();
+            
+        const signer = provider.getSigner();
+        const Role = new ethers.Contract(contractAddress, SenderAbi, signer);
+
+        const usdcaddress = new ethers.Contract("0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",tokenabi, signer );
+
+        const userAddress = await signer.getAddress();
+        console.log("user address", userAddress);
+        
+        const allowance = await usdcaddress.allowance(userAddress,contractAddress );
+
+        console.log("allowance",allowance.toString());
+
+        if(allowance.toString() === "0") {
+            const approve = await usdcaddress.approve(contractAddress, "100000000000000000000000" );
+            const balance = await usdcaddress.balanceOf(userAddress );
+
+
+approve.wait()
+
+console.log("balnace",balance);
+
+ const answer = await Role.selectSubscription(id, 0);
+        return answer;
+        }
+
+        else{
+            const balance = await usdcaddress.balanceOf(userAddress );
+            console.log("balnace",balance);
+
+            console.log("no approve required");
+             const answer = await Role.selectSubscription(id, 0);
+        return answer;
+        }
+
+
+
+
+
+        // const answer = await Role.selectSubscription(id, 0);
+        // return answer;
+    } catch (error) {
+        console.error('Error sending USDC:', error);
+    }
+}
+
+export const GETSUBSCRIPTIONBYADDRESS = async (contractAddress, walletAddress) => {
+    console.log("address", walletAddress);
+    
+    try {
+        const provider = 
+        window.ethereum != null
+        ? new ethers.providers.Web3Provider(window.ethereum)
+        : ethers.providers.getDefaultProvider();
+            
+        const signer = provider.getSigner();
+        const Role = new ethers.Contract(contractAddress, SenderAbi, signer);
+        const answer = await Role.getUserSubscriptions(walletAddress);
+        return answer;
+    } catch (error) {
+        console.error('Error getting subscription id detail:', error);
     }
 }
 
