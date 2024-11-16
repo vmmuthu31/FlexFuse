@@ -163,8 +163,8 @@ function Navbar() {
                     {kycViewerInfo?.isKYC && (
                       <MdVerified className="text-green-400" />
                     )}
-                    `${accountInfo.walletAddress.slice(0, 5)}...$
-                    {accountInfo.walletAddress.slice(-5)}`
+                    {accountInfo.walletAddress.slice(0, 5)}...
+                    {accountInfo.walletAddress.slice(-5)}
                   </div>
                 )}
               </div>
