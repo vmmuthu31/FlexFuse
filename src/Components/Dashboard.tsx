@@ -16,6 +16,10 @@ import { useAccount } from "wagmi";
 import SubscriptionTable from "./SubscriptionTable";
 import GroupExpensesTable from "./GroupExpensesTable";
 import { Link } from "react-router-dom";
+import { FaWallet } from "react-icons/fa6";
+import { CiSquarePlus } from "react-icons/ci";
+import { TiGroup } from "react-icons/ti";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 
 const CONTRACT_ADDRESS = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
 const ethcontractaddress = SEPOLIA_CONTRACT_ADDRESS_SENDER;
@@ -88,7 +92,7 @@ const Dashboard = () => {
     } catch (error) {
       console.log("error", error);
     }
-  }
+  };
 
   const fetchGroupExpenses = async () => {
     if (!walletAddress) return;
@@ -126,7 +130,7 @@ const Dashboard = () => {
     } catch (error) {
       console.log("error", error);
     }
-  }
+  };
 
   useEffect(() => {
     if (network === "kinto") {
@@ -144,7 +148,6 @@ const Dashboard = () => {
     }
     // eslint-disable-next-line
   }, [activeSection, network]);
-  
 
   return (
     <div className="bg-[#E8E8E8] flex flex-col justify-between min-h-screen">
@@ -159,11 +162,7 @@ const Dashboard = () => {
                 {walletAddress.slice(-5)}
               </p>
 
-              <div className="flex items-center gap-5 mt-8 justify-center">
-                <div className="text-center text-white p-8 rounded-lg w-60 bg-[#262626] mb-6">
-                  <p className="font-bold text-xl">0.00</p>
-                  <p className=" mt-2"> Wallet Balance</p>{" "}
-                </div>
+              <div className="flex items-center gap-4 mt-8 justify-center">
                 <div className="text-center text-white p-8 rounded-lg w-60 bg-[#262626] mb-6">
                   <p className="text-xl font-bold">
                     {subscriptionDetails.length}
@@ -171,38 +170,52 @@ const Dashboard = () => {
                   <p className=" mt-2">Active Subscriptions</p>
                 </div>
                 <div className="text-center text-white p-8 rounded-lg w-60 bg-[#262626] mb-6">
-                  <p className="font-bold text-xl">
-                    {groupExpenses[2]?.reduce((a, b) => a + b, 0n).toString()}
-                  </p>
-                  <p className="mt-2">Total Expenses</p>
+                  <p className="font-bold text-xl">0.002 eth</p>
+                  <p className=" mt-2"> Pending Expenses</p>{" "}
                 </div>
-                <div className="text-center flex flex-col gap-5  max-w-md mb-6">
+                <div className="text-center text-white p-8 rounded-lg w-60 bg-[#262626] mb-6">
+                  <p className="font-bold text-xl">$0 spent</p>
+                  <p className=" mt-2"> Recent Transactions</p>{" "}
+                </div>
+              </div>
+              <div className="flex justify-center gap-8">
+                <div className="text-center w-1/4 text-white p-8 rounded-lg  bg-[#262626] mb-6">
+                  <p className="font-bold flex gap-2 justify-center items-center text-xl">
+                    {" "}
+                    <FaWallet />
+                    <span>Wallet Balance</span>
+                  </p>
+                  <p className="mt-2">
+                    {walletAddress.slice(0, 5)}...
+                    {walletAddress.slice(-5)}
+                  </p>
+                  <p className="mt-2 text-3xl">0.002 eth</p>
+                </div>
+                <div className="text-left bg-[#262626] px-3 py-2 rounded-lg flex flex-col gap-2  max-w-md mb-6">
                   <Link
+                    className="bg-white flex gap-2 items-center text-black px-4 py-2 mt-1 rounded w-[350px]"
                     to="/CreateSubscription"
-                    className="bg-[#262626] text-white px-8 py-2 rounded  w-full"
                   >
-                    Create Subscription
+                    <CiSquarePlus className="text-2xl" />
+                    <span>Create Subscription</span>
                   </Link>
                   <Link
                     to="/CreateExpenses"
-                    className="bg-[#262626] text-white px-4 py-2 mt-2 rounded w-full"
+                    className="bg-white flex gap-2 items-center text-black px-4 py-2 mt-1 rounded w-[350px]"
                   >
-                    Create Expense
+                    <FaMoneyBillTrendUp className="text-2xl" />
+                    <span>Create Expenses</span>
+                  </Link>
+                  <Link
+                    to="/CreateGroup"
+                    className="bg-white flex gap-2 items-center text-black px-4 py-2 mt-1 rounded w-[350px]"
+                  >
+                    <TiGroup className="text-2xl" />
+                    <span>Create Group</span>
                   </Link>
                 </div>
               </div>
-              <div className="text-center mt-5">
-                <p>
-                  Do you don't have a group yet? Create a group and start
-                  sharing expenses.
-                  <Link
-                    to="/CreateGroup"
-                    className="bg-[#262626] ml-5 text-white px-4 py-2 mt-2 rounded w-full"
-                  >
-                    Create Group
-                  </Link>
-                </p>
-              </div>
+
               <div className="flex pl-16 items-center">
                 <button
                   onClick={() => setActiveSection("subscriptions")}
