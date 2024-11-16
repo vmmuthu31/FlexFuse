@@ -174,65 +174,67 @@ function Home() {
           </p>
         </div>
       </div>
-      <div className="flex gap-5 pb-5  mt-10  justify-center">
-        <div className="bg-[#262626] px-5 pt-5 rounded-lg text-white">
-          <p className="text-xl ">
-            Create or Connect <br /> Your Wallet
-          </p>
-          <p className="text-[16px] opacity-[70%]">
-            Easily set up a secure wallet or connect an <br /> existing one
-            using Kinto’s Wallet SDK.
-          </p>
-          <div className="flex justify-end -mt-14 -mb-3">
-            <p className="font-playfair text-[160px] font-bold italic leading-none">
-              1
+      <div className="max-w-4xl mx-auto">
+        <div className="flex gap-5 pb-5  mt-10  justify-center">
+          <div className="bg-[#262626] w-1/2 px-5 pt-5 rounded-lg text-white">
+            <p className="text-xl ">
+              Create or Connect <br /> Your Wallet
             </p>
+            <p className="text-[16px] opacity-[70%]">
+              Easily set up a secure wallet or connect an <br /> existing one
+              using Kinto’s Wallet SDK.
+            </p>
+            <div className="flex justify-end -mt-14 -mb-3">
+              <p className="font-playfair text-[160px] font-bold italic leading-none">
+                1
+              </p>
+            </div>
+          </div>
+          '
+          <div className="bg-[#262626] w-1/2 px-5 pt-5 rounded-lg text-white">
+            <p className="text-xl ">
+              Verify Your <br /> Identity
+            </p>
+            <p className="text-[16px] opacity-[70%]">
+              Complete a quick, secure KYC verification to <br /> ensure a
+              trusted environment for all users.
+            </p>
+            <div className="flex justify-end -mt-14 -mb-3">
+              <p className="font-playfair text-[160px] font-bold italic leading-none">
+                2
+              </p>
+            </div>
           </div>
         </div>
-        '
-        <div className="bg-[#262626] px-5 pt-5 rounded-lg text-white">
-          <p className="text-xl ">
-            Verify Your <br /> Identity
-          </p>
-          <p className="text-[16px] opacity-[70%]">
-            Complete a quick, secure KYC verification to <br /> ensure a trusted
-            environment for all users.
-          </p>
-          <div className="flex justify-end -mt-14 -mb-3">
-            <p className="font-playfair text-[160px] font-bold italic leading-none">
-              2
+        <div className="flex gap-5 pb-5   mt-5  justify-center">
+          <div className="bg-[#262626] w-1/2 px-5 pt-5 rounded-lg text-white">
+            <p className="text-xl ">
+              Settle Payments <br /> Easily
             </p>
+            <p className="text-[16px] opacity-[70%]">
+              Pay and receive funds in your preferred tokens <br /> and chains
+              for ultimate flexibility.
+            </p>
+            <div className="flex justify-end -mt-14 pb-2">
+              <p className="font-playfair text-[160px] font-bold italic leading-none">
+                3
+              </p>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="flex gap-5 pb-5  mt-5  justify-center">
-        <div className="bg-[#262626] px-5 pt-5 rounded-lg text-white">
-          <p className="text-xl ">
-            Settle Payments <br /> Easily
-          </p>
-          <p className="text-[16px] opacity-[70%]">
-            Pay and receive funds in your preferred tokens <br /> and chains for
-            ultimate flexibility.
-          </p>
-          <div className="flex justify-end -mt-14 pb-2">
-            <p className="font-playfair text-[160px] font-bold italic leading-none">
-              3
+          '
+          <div className="bg-[#262626] w-1/2 px-5 pt-5 rounded-lg text-white">
+            <p className="text-xl ">
+              Manage Expenses <br /> and Subscriptions{" "}
             </p>
-          </div>
-        </div>
-        '
-        <div className="bg-[#262626] px-5 pt-5 rounded-lg text-white">
-          <p className="text-xl ">
-            Manage Expenses <br /> and Subscriptions{" "}
-          </p>
-          <p className="text-[16px] opacity-[70%]">
-            Effortlessly split bills or subscribe to services <br /> across
-            different blockchains with ease.
-          </p>
-          <div className="flex justify-end -mt-14 ">
-            <p className="font-playfair text-[160px] font-bold italic leading-none">
-              4
+            <p className="text-[16px] opacity-[70%]">
+              Effortlessly split bills or subscribe to services <br /> across
+              different blockchains with ease.
             </p>
+            <div className="flex justify-end -mt-14 ">
+              <p className="font-playfair text-[160px] font-bold italic leading-none">
+                4
+              </p>
+            </div>
           </div>
         </div>
       </div>
