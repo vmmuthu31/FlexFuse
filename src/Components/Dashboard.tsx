@@ -134,7 +134,9 @@ const Dashboard = () => {
                   <p className=" mt-2">Active Subscriptions</p>
                 </div>
                 <div className="text-center text-white p-8 rounded-lg w-60 bg-[#262626] mb-6">
-                  <p className="font-bold text-xl">{groupExpenses.length}</p>
+                  <p className="font-bold text-xl">
+                    {groupExpenses[2]?.reduce((a, b) => a + b, 0n).toString()}
+                  </p>
                   <p className="mt-2">Total Expenses</p>
                 </div>
                 <div className="text-center flex flex-col gap-5  max-w-md mb-6">
