@@ -39,7 +39,9 @@ const KINTO_CHAIN = defineChain({
 const Dashboard = () => {
   const walletAddress = useSelector((state: any) => state?.wallet?.address);
   const [subscriptionDetails, setSubscriptionDetails] = useState<any[]>([]);
-  const [groupExpenses, setGroupExpenses] = useState<any[]>([]);
+  const [groupExpenses, setGroupExpenses] = useState<
+    [bigint[], string[], bigint[], boolean[]]
+  >([[], [], [], []]);
   const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState<
     "subscriptions" | "groups"
@@ -90,7 +92,7 @@ const Dashboard = () => {
 
       const groups = await contract.read.getAllGroups();
       console.log("groups", groups);
-      setGroupExpenses(groups as any[]);
+      setGroupExpenses(groups as [bigint[], string[], bigint[], boolean[]]);
     } catch (error) {
       console.error("Error fetching group expenses:", error);
     } finally {

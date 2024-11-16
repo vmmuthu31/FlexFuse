@@ -5,39 +5,35 @@ import FlexfuseAbi from "../../public/abis/flexfuse.json";
 import { createKintoSDK } from "kinto-web-sdk";
 import { Link, useNavigate } from "react-router-dom";
 import { FaAngleLeft } from "react-icons/fa6";
+import { FaPlus, FaTimes } from "react-icons/fa";
 
 const kintoSDK = createKintoSDK("0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2");
-
-const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
+const contractAddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
 
 function CreateGroup() {
   const router = useNavigate();
 
   async function creategroup({
     name,
-    description,
-    baseAmount,
-    token,
+    members,
   }: {
     name: string;
-    description: string;
-    baseAmount: number;
-    token: string;
+    members: string[];
   }): Promise<void> {
     const data = encodeFunctionData({
       abi: FlexfuseAbi,
-      functionName: "createSubscription",
-      args: [name, description, baseAmount, token],
+      functionName: "createGroup",
+      args: [name, members],
     });
 
     try {
       const response = await kintoSDK.sendTransaction([
-        { to: contractadddress, data, value: BigInt(0) },
+        { to: contractAddress, data, value: BigInt(0) },
       ]);
-      console.log("Subscription created:", response);
-      router("/Subscriptions");
+      console.log("Group created:", response);
+      router("/Dashboard");
     } catch (error) {
-      console.error("Error creating subscription:", error);
+      console.error("Error creating group:", error);
       throw error;
     }
   }
@@ -45,105 +41,135 @@ function CreateGroup() {
   const [response, setResponse] = useState("");
   const [fields, setFields] = useState({
     name: "",
-    description: "",
-    baseAmount: "",
+    members: "",
   });
-  const defaultToken = "0x010700808D59d2bb92257fCafACfe8e5bFF7aB87";
+
+  const [membersList, setMembersList] = useState<string[]>([]);
+  console.log("Members List:", membersList);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFields({ ...fields, [e.target.name]: e.target.value });
   };
 
-  const handleCreateSubscription = async () => {
+  const addMember = () => {
+    const trimmedAddress = fields.members.trim();
+    if (trimmedAddress && !membersList.includes(trimmedAddress)) {
+      setMembersList([...membersList, trimmedAddress]);
+      setFields({ ...fields, members: "" });
+    }
+  };
+
+  const removeMember = (address: string) => {
+    setMembersList(membersList.filter((member) => member !== address));
+  };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      addMember();
+    }
+  };
+  const handleCreateGroup = async () => {
     try {
       const args = {
-        ...fields,
-        baseAmount: Number(fields.baseAmount),
-        token: defaultToken,
+        name: fields.name,
+        members: membersList,
       };
 
-      console.log("Subscription Args:", args);
+      console.log("Group Args:", args);
 
       await creategroup(args);
-      setResponse("Subscription created successfully!");
+      setResponse("Group created successfully!");
     } catch (error) {
-      console.error("Error creating subscription:", error);
+      console.error("Error creating group:", error);
       setResponse(`Error: ${error}`);
     }
   };
 
   return (
     <div className="bg-gray-100 min-h-screen">
+      {/* Navbar */}
       <Navbar />
-      <div className="flex  justify-between pl-20">
+
+      {/* Header Section */}
+      <div className="flex justify-between pl-20">
         <Link
           to="/Dashboard"
           className="flex gap-2 items-center text-black font-dmsans text-lg"
         >
           <FaAngleLeft />
-          <span> Back</span>
+          <span>Back</span>
         </Link>
-        <div className="text-center mt-5">
+        <div className="text-center -ml-20 mt-5">
           <p className="font-playfair italic font-bold text-3xl mt-5">
-            Create a New Subscription
+            Create a New Group
           </p>
           <p className="font-dmsans pt-3 text-lg">
-            Fill in the details to create a new subscription.{" "}
+            Fill in the details to create a new group.
           </p>
         </div>
         <div></div>
       </div>
-      <div className="max-w-4xl mx-auto p-6">
+
+      {/* Form Section */}
+      <div className="max-w-2xl mx-auto p-6">
         <div className="bg-white p-6 shadow rounded-md mb-6">
-          <h2 className="text-xl font-bold mb-4">Create a New Subscription</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Name</label>
+          {/* Group Name Input */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={fields.name}
+              onChange={handleInputChange}
+              placeholder="Enter group name"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Members Input */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">Members</label>
+            <div className="flex items-center">
               <input
                 type="text"
-                name="name"
-                value={fields.name}
+                name="members"
+                value={fields.members}
                 onChange={handleInputChange}
-                placeholder="Enter subscription name"
-                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onKeyDown={handleKeyDown}
+                placeholder="Enter member addresses"
+                className="flex-1 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Description
-              </label>
-              <input
-                type="text"
-                name="description"
-                value={fields.description}
-                onChange={handleInputChange}
-                placeholder="Enter subscription description"
-                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <button
+                type="button"
+                onClick={addMember}
+                className="ml-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                <FaPlus />
+              </button>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Base Amount (ETH)
-              </label>
-              <input
-                type="number"
-                name="baseAmount"
-                value={fields.baseAmount}
-                onChange={handleInputChange}
-                placeholder="Enter base amount"
-                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Token</label>
-              <input
-                type="text"
-                value={defaultToken}
-                disabled
-                className="w-full p-2 border rounded bg-gray-200 text-gray-600"
-              />
+
+          {/* Members List */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">
+              Added Members
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {membersList.map((member, index) => (
+                <div
+                  key={index}
+                  className="flex items-center bg-gray-200 px-2 py-1 rounded"
+                >
+                  <span className="text-sm">{member}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeMember(member)}
+                    className="ml-2 text-red-500 hover:text-red-700"
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -151,10 +177,10 @@ function CreateGroup() {
         {/* Action Button */}
         <div className="text-center">
           <button
-            onClick={handleCreateSubscription}
+            onClick={handleCreateGroup}
             className="bg-green-500 text-white py-3 px-6 rounded shadow-md hover:bg-green-600"
           >
-            Create Subscription
+            Create Group
           </button>
         </div>
 
