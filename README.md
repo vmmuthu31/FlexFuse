@@ -2,7 +2,7 @@
 
 ![Slide 16_9 - 11](https://github.com/user-attachments/assets/f60b1168-0640-48b3-aa33-eb770bb6effa)
 
-## Table of Contents 
+## Table of Contents
 
 - [Introduction](#introduction)
 - [Features](#features)
