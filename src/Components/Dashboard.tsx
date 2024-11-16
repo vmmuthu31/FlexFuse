@@ -152,11 +152,13 @@ const Dashboard = () => {
       <main className="flex-grow">
         {/* Main Content */}
         <div className="flex-grow p-6">
-          {walletAddress ? (
+          {walletAddress || account?.address ? (
             <>
               <p className="font-playfair text-center mt-8 italic font-bold text-3xl mb-6">
-                Welcome Back {walletAddress.slice(0, 5)}...
-                {walletAddress.slice(-5)}
+                Welcome Back {(() => {
+                  const address = network === 'kinto' ? walletAddress : account?.address;
+                  return address ? `${address.slice(0, 5)}...${address.slice(-5)}` : 'Guest';
+                })()}
               </p>
 
               <div className="flex items-center gap-5 mt-8 justify-center">

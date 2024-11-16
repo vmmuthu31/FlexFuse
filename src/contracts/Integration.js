@@ -151,6 +151,7 @@ export const GETSUBSCRIPTIONBYADDRESS = async (contractAddress, walletAddress) =
         console.error('Error getting subscription wallet detail:', error);
     }
 }
+
 export const CREATESUBSCRIPTION = async (contractAddress, name, description, baseAmount, token) => {
     try {
         const provider = 
@@ -164,6 +165,54 @@ export const CREATESUBSCRIPTION = async (contractAddress, name, description, bas
         return answer;
     } catch (error) {
         console.error('Error getting create subscription:', error);
+    }
+}
+
+export const GETALLGROUPS = async (contractAddress) => {
+    try {
+        const provider = 
+        window.ethereum != null
+        ? new ethers.providers.Web3Provider(window.ethereum)
+        : ethers.providers.getDefaultProvider();
+            
+        const signer = provider.getSigner();
+        const Role = new ethers.Contract(contractAddress, SenderAbi, signer);
+        const answer = await Role.getAllGroups();
+        return answer;
+    } catch (error) {
+        console.error('Error getting groups:', error);
+    }
+}
+
+export const ADDEXPENSE = async (contractAddress, groupId, amount, token) => {
+    try {
+        const provider = 
+        window.ethereum != null
+        ? new ethers.providers.Web3Provider(window.ethereum)
+        : ethers.providers.getDefaultProvider();
+            
+        const signer = provider.getSigner();
+        const Role = new ethers.Contract(contractAddress, SenderAbi, signer);
+        const answer = await Role.addExpense(groupId, amount, token);
+        return answer;
+    } catch (error) {
+        console.error('Error adding expense:', error);
+    }
+}
+
+export const CREATEGROUP = async (contractAddress, name, members) => {
+    try {
+        const provider = 
+        window.ethereum != null
+        ? new ethers.providers.Web3Provider(window.ethereum)
+        : ethers.providers.getDefaultProvider();
+            
+        const signer = provider.getSigner();
+        const Role = new ethers.Contract(contractAddress, SenderAbi, signer);
+        const answer = await Role.createGroup(name, members);
+        return answer;
+    } catch (error) {
+        console.error('Error creating group:', error);
     }
 }
 
