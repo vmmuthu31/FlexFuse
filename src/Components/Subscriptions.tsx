@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 import { IoSearchSharp } from "react-icons/io5";
@@ -19,6 +18,9 @@ const contractadddress = "0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2";
 
 function Subscriptions() {
   const [subscriptionDetails, setSubscriptionDetails] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
 
   const kinto = defineChain({
     id: 7887,
@@ -54,8 +56,7 @@ function Subscriptions() {
 
     try {
       const details = await contract.read.getAllSubscriptions();
-      console.log("Subscription Details:", details);
-      setSubscriptionDetails(details as any[]);
+      setSubscriptionDetails((details as any[]).reverse());
     } catch (error) {
       console.error("Error fetching subscription details:", error);
     }
@@ -63,7 +64,22 @@ function Subscriptions() {
 
   useEffect(() => {
     fetchSubscriptionDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const filteredSubscriptions = subscriptionDetails.filter(
+    (subscription) =>
+      subscription.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      subscription.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedSubscriptions = filteredSubscriptions.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  const totalPages = Math.ceil(filteredSubscriptions.length / itemsPerPage);
 
   return (
     <div className="bg-[#E8E8E8] flex flex-col justify-between min-h-screen">
@@ -84,6 +100,8 @@ function Subscriptions() {
                   type="text"
                   placeholder="Search for subscriptions..."
                   className="w-full p-2 pl-10 pr-32 border rounded-l-md"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <button className="absolute right-0 top-0 bottom-0 bg-black text-white px-4 rounded-r-md hover:bg-blue-600">
                   Search
@@ -94,9 +112,9 @@ function Subscriptions() {
               </div>
             </div>
             <div className="mt-5 max-w-3xl mx-auto">
-              {subscriptionDetails.length > 0 ? (
+              {paginatedSubscriptions.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {subscriptionDetails.map((subscription, index) => (
+                  {paginatedSubscriptions.map((subscription, index) => (
                     <div
                       key={index}
                       className="p-4 py-6 bg-[#262626] text-white shadow-md rounded-md"
@@ -129,6 +147,36 @@ function Subscriptions() {
                   No subscriptions found.
                 </p>
               )}
+            </div>
+            {/* Pagination Controls */}
+            <div className="flex justify-center mt-5">
+              <button
+                className="px-3 py-1 mx-1 bg-gray-300 hover:bg-gray-400 rounded"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+              >
+                Previous
+              </button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  className={`px-3 py-1 mx-1 ${
+                    currentPage === index + 1
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-300 hover:bg-gray-400"
+                  } rounded`}
+                  onClick={() => setCurrentPage(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                className="px-3 py-1 mx-1 bg-gray-300 hover:bg-gray-400 rounded"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+              >
+                Next
+              </button>
             </div>
           </div>
         </div>

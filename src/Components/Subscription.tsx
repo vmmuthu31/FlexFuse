@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
-import { IoSearchSharp } from "react-icons/io5";
-import { FiFilter } from "react-icons/fi";
 import {
   Address,
   getContract,
@@ -67,6 +65,7 @@ const Subscription = () => {
 
   useEffect(() => {
     fetchSubscriptionDetails();
+    // eslint-disable-next-line
   }, []);
 
   return (
