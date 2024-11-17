@@ -14,11 +14,7 @@ import Subscription from "Components/Subscription";
 import CreateSubscription from "Components/CreateSubscription";
 import CreateExpenses from "Components/CreateExpenses";
 import CreateGroup from "Components/CreateGroup";
-<<<<<<< HEAD
-import Redeem from "Components/Redeem";
-=======
 import CrossChainTransfer from "Components/CrossChain";
->>>>>>> c11f338cc97d07c5ad69cc76748ab6e4ab45cd00
 
 function App() {
   return (
@@ -32,11 +28,7 @@ function App() {
           <Route path="/Subscriptions/:id" element={<Subscription />} />
           <Route path="/CreateExpenses" element={<CreateExpenses />} />
           <Route path="/CreateGroup" element={<CreateGroup />} />
-<<<<<<< HEAD
-          <Route path="/Redeem" element={<Redeem />} />
-=======
           <Route path="/crosschain" element={<CrossChainTransfer />} />
->>>>>>> c11f338cc97d07c5ad69cc76748ab6e4ab45cd00
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
