@@ -2,7 +2,7 @@
 
 ![Slide 16_9 - 11](https://github.com/user-attachments/assets/f60b1168-0640-48b3-aa33-eb770bb6effa)
 
-## Table of Contents 
+## Table of Contents
 
 - [Introduction](#introduction)
 - [Features](#features)
@@ -78,3 +78,27 @@ FlexFuse is an innovative platform that simplifies decentralized finance (DeFi) 
 - **Q2**: Integration with additional blockchains and tokens.
 - **Q3**: Mobile app release and developer incentive programs.
 - **Q4**: Global expansion and partnerships with major DeFi platforms.
+
+## Contract Links
+
+1. Kinto : https://explorer.kinto.xyz/address/0x6f0029F082e03ee480684aC5Ef7fF019813ac1C2?tab=contract
+
+2. Chainlink CCIP : 
+
+subscription contract : 0xcfeB8fb0f62aDc81aa6621Dd9161378d6741C83F
+https://sepolia.etherscan.io/address/0xcfeB8fb0f62aDc81aa6621Dd9161378d6741C83F
+
+ccip contract: 0xc5Ff1aBaBca988e7e934F4cF966e0dd8607D4A46
+https://sepolia.etherscan.io/address/0xc5Ff1aBaBca988e7e934F4cF966e0dd8607D4A46
+
+staker address : 0x317028F9DF66B23f81331bB2639f479C728E89A3
+https://sepolia.basescan.org/address/0x317028F9DF66B23f81331bB2639f479C728E89A3
+
+receiver address: 0x2e1b5c625703d1dB9400F90f9495DB75688E6790
+https://sepolia.basescan.org/address/0x2e1b5c625703d1dB9400F90f9495DB75688E6790
+
+3. 
+
+
+
+
