@@ -29,7 +29,7 @@ const Subscription = () => {
   const [subscriptionDetails, setSubscriptionDetails] = useState<any>();
   const [subscribesuccess, setSubscribeSuccess] = useState(false);
   const network = useSelector((state: any) => state?.network?.network);
-  const [amount, setAmount] = useState('100');
+  const [amount, setAmount] = useState("100");
 
   const [searchParams] = useSearchParams();
   const account = useAccount();
@@ -71,7 +71,6 @@ const Subscription = () => {
       const details = await contract.read.getSubscriptionDetails([id]);
       setSubscriptionDetails(details);
       console.log("result of kinto", details);
-      
     } catch (error) {
       console.error("Error fetching subscription details:", error);
     }
@@ -89,14 +88,16 @@ const Subscription = () => {
         { to: contractadddress, data, value: BigInt(0) },
       ]);
       console.log("Subscription created:", response);
-      toast.success("Subscription Activated Successfully");
+      toast.success(
+        `Subscription Activated Successfully check the tx hash https://explorer.kinto.xyz/tx/${response}`
+      );
       setSubscribeSuccess(true);
     } catch (error) {
       console.error("Error creating subscription:", error);
       throw error;
     }
   }
-  
+
   const fetchSubscriptionIdDetailEth = async () => {
     try {
       const id = searchParams.get("id");
@@ -106,7 +107,7 @@ const Subscription = () => {
     } catch (error) {
       console.log("error", error);
     }
-  }
+  };
 
   const createSubscriptionEth = async () => {
     try {
@@ -119,9 +120,9 @@ const Subscription = () => {
       console.error("Error creating subscription:", error);
       throw error;
     }
-  }
+  };
 
-  const handlePayment = async(paymentMethod : any) => {
+  const handlePayment = async (paymentMethod: any) => {
     if (paymentMethod === "native") {
       console.log("Paying with Native Tokens...");
 
@@ -130,17 +131,21 @@ const Subscription = () => {
     } else if (paymentMethod === "usdc") {
       console.log("Paying with USDC...");
 
-      const result = await CCIPSEND('0xc5Ff1aBaBca988e7e934F4cF966e0dd8607D4A46', account?.address, amount);
+      const result = await CCIPSEND(
+        "0xc5Ff1aBaBca988e7e934F4cF966e0dd8607D4A46",
+        account?.address,
+        amount
+      );
       console.log("result of ccip", result);
       toast.success("Subscription Activated Successfully");
       setSubscribeSuccess(true);
       // Add logic for USDC payment
     }
     setModel(false); // Close the modal after selection
-  };  
+  };
 
   useEffect(() => {
-    if (network === 'kinto') {
+    if (network === "kinto") {
       fetchSubscriptionDetails();
     } else {
       fetchSubscriptionIdDetailEth();
@@ -171,7 +176,7 @@ const Subscription = () => {
           <div></div>
         </div>
 
-        {network === 'kinto' &&
+        {network === "kinto" && (
           <div className="mt-10">
             {subscriptionDetails && (
               <div className="flex pl-20 text-left ">
@@ -182,7 +187,8 @@ const Subscription = () => {
                   <p className="text-gray-600">{subscriptionDetails[1]}</p>
 
                   <p className="text-2xl pt-3 font-albertsans font-medium text-[#262626]">
-                    {ethers.utils.formatEther(subscriptionDetails[3])} Kinto/Month
+                    {ethers.utils.formatEther(subscriptionDetails[3])}{" "}
+                    Kinto/Month
                   </p>
                   <p className="text-gray-600">
                     Monthly, Annual, or One-Time Payment.
@@ -204,9 +210,9 @@ const Subscription = () => {
               </div>
             )}
           </div>
-        }
+        )}
 
-        {network === 'eth' && 
+        {network === "eth" && (
           <div className="mt-10">
             {subscriptionDetails && (
               <div className="flex pl-20 text-left ">
@@ -239,37 +245,39 @@ const Subscription = () => {
               </div>
             )}
           </div>
-        }
+        )}
 
         {model && (
-              <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-md">
-                  <h2 className="text-xl font-bold text-center mb-4">Payment Options</h2>
-                  <div className="space-y-4">
-                    <button
-                      onClick={() => handlePayment("native")}
-                      className="w-full px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600"
-                    >
-                      Pay with Native Tokens
-                    </button>
-                    <button
-                      onClick={() => handlePayment("usdc")}
-                      className="w-full px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600"
-                    >
-                      Pay with USDC
-                    </button>
-                  </div>
-                  <button
-                    onClick={() => setModel(false)}
-                    className="mt-4 w-full px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
-                  >
-                    Close
-                  </button>
-                </div>
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-md">
+              <h2 className="text-xl font-bold text-center mb-4">
+                Payment Options
+              </h2>
+              <div className="space-y-4">
+                <button
+                  onClick={() => handlePayment("native")}
+                  className="w-full px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600"
+                >
+                  Pay with Native Tokens
+                </button>
+                <button
+                  onClick={() => handlePayment("usdc")}
+                  className="w-full px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600"
+                >
+                  Pay with USDC
+                </button>
               </div>
-            )}
+              <button
+                onClick={() => setModel(false)}
+                className="mt-4 w-full px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
 
-        {network === 'flare' && 
+        {network === "flare" && (
           <div className="mt-10">
             {subscriptionDetails && (
               <div className="flex pl-20 text-left ">
@@ -302,9 +310,7 @@ const Subscription = () => {
               </div>
             )}
           </div>
-        }
-
-
+        )}
       </main>
       <Footer />
     </div>
