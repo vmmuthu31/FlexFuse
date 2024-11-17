@@ -12,7 +12,7 @@ import {
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
-import { flareTestnet, hederaTestnet, sepolia } from 'wagmi/chains';
+import { baseSepolia, flareTestnet, hederaTestnet, sepolia } from 'wagmi/chains';
 import {
   QueryClientProvider,
   QueryClient,
@@ -21,7 +21,7 @@ import {
 const config = getDefaultConfig({
   appName: 'My RainbowKit App',
   projectId: 'YOUR_PROJECT_ID',
-  chains: [sepolia, hederaTestnet, flareTestnet],
+  chains: [sepolia, hederaTestnet, flareTestnet, baseSepolia],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });
 
