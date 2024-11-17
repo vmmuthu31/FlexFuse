@@ -3,8 +3,12 @@ pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
+
 
 contract FlexFuse is ReentrancyGuard {
+    IPyth public pyth;
+
     struct Subscription {
         uint256 id;
         string name;
@@ -52,6 +56,9 @@ contract FlexFuse is ReentrancyGuard {
     uint256 private nextSubscriptionId = 1;
     uint256 private nextGroupId = 1;
 
+constructor(address _pythAddress) {
+    pyth = IPyth(_pythAddress);
+}
 
     mapping(uint256 => Subscription) public subscriptions; 
     mapping(address => UserSubscription[]) public userSubscriptions; 
@@ -392,6 +399,21 @@ contract FlexFuse is ReentrancyGuard {
     function getGroupPayments(uint256 groupId, address member) external view groupExists(groupId) returns (uint256) {
         return groups[groupId].payments[member];
     }
+
+    function getPrice(string memory priceFeedId) public view returns (uint256) {
+    PythStructs.Price memory price = pyth.getPriceUnsafe(priceFeedId);
+    require(price.price > 0, "Invalid price data");
+    return uint256(price.price);
+}
+
+function updatePriceFeed(bytes[] calldata updateData) external {
+    uint256 fee = pyth.getUpdateFee(updateData);
+    require(msg.value >= fee, "Insufficient fee");
+
+    pyth.updatePriceFeeds{value: msg.value}(updateData);
+}
+
+
 
     function getGroupDetails(uint256 groupId)
         external
